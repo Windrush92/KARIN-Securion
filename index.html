@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
   <!-- FOUC Prevention Script -->
   <script>
     (function() {
-      const savedTheme = localStorage.getItem('karin_theme') || 'dark';
+      const savedTheme = localStorage.getItem('karin_theme') || 'light';
       document.documentElement.setAttribute('data-theme', savedTheme);
       const meta = document.querySelector('meta[name="color-scheme"]');
       if (meta) {
@@ -2768,7 +2768,7 @@
 
     // INICIALIZACIÓN
     window.addEventListener('DOMContentLoaded', () => {
-      const savedTheme = localStorage.getItem('karin_theme') || 'dark';
+      const savedTheme = localStorage.getItem('karin_theme') || 'light';
       applyTheme(savedTheme);
       updateCounters();
       renderOrders();
