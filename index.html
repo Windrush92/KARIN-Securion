@@ -1,0 +1,2778 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark light">
+  <title>KARÍN | Portal de Pedidos & Gestión Securion</title>
+  <meta name="description" content="Plataforma de solicitud y seguimiento de piezas de diseño para Securion por Karín Diseño.">
+  <link rel="icon" type="image/png" href="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=32,h=32,fit=crop,f=png/mv0lGExe8ySg27l9/favicon-karin-AR0VG83LXwT9lnw8.png">
+
+  <!-- FOUC Prevention Script -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('karin_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      const meta = document.querySelector('meta[name="color-scheme"]');
+      if (meta) {
+        meta.setAttribute('content', savedTheme === 'dark' ? 'dark light' : 'light dark');
+      }
+    })();
+  </script>
+
+  <!-- Google Fonts: Bebas Neue (títulos Karin) y Open Sans (cuerpo y controles) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+  <style>
+    /* VARIABLES DE TEMA: MODO OSCURO POR DEFECTO */
+    :root, [data-theme="dark"] {
+      color-scheme: dark;
+      --karin-yellow: #FCBB15;
+      --karin-yellow-hover: #e5a70c;
+      --karin-yellow-light: rgba(252, 187, 21, 0.12);
+      --karin-yellow-border: rgba(252, 187, 21, 0.35);
+      
+      --bg-main: #0B0B0E;
+      --bg-surface: #141419;
+      --bg-surface-elevated: #1B1B22;
+      --bg-surface-hover: #22222B;
+      --border-subtle: #272732;
+      --border-medium: #363645;
+      
+      --text-main: #FFFFFF;
+      --text-muted: #9E9EA8;
+      --text-dim: #6B6B78;
+      
+      --danger: #FF4D4F;
+      --danger-bg: rgba(255, 77, 79, 0.12);
+      --danger-border: rgba(255, 77, 79, 0.3);
+      --success: #52C41A;
+      --success-bg: rgba(82, 196, 26, 0.12);
+      --success-border: rgba(82, 196, 26, 0.3);
+      --warning: #FAAD14;
+      --warning-bg: rgba(250, 173, 20, 0.12);
+      --warning-border: rgba(250, 173, 20, 0.3);
+      --info: #1890FF;
+      --info-bg: rgba(24, 144, 255, 0.12);
+      --info-border: rgba(24, 144, 255, 0.3);
+      --purple: #B37FEB;
+      --purple-bg: rgba(114, 46, 209, 0.15);
+      --purple-border: rgba(114, 46, 209, 0.3);
+
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.4);
+      --shadow-drawer: -6px 0 30px rgba(0, 0, 0, 0.7);
+      --header-bg: rgba(11, 11, 14, 0.95);
+    }
+
+    /* VARIABLES DE TEMA: MODO CLARO (DISCRETO Y PULIDO) */
+    [data-theme="light"] {
+      color-scheme: light;
+      --karin-yellow: #D99B00;
+      --karin-yellow-hover: #c48a00;
+      --karin-yellow-light: rgba(217, 155, 0, 0.1);
+      --karin-yellow-border: rgba(217, 155, 0, 0.35);
+      
+      --bg-main: #F6F6FA;
+      --bg-surface: #FFFFFF;
+      --bg-surface-elevated: #F0F0F5;
+      --bg-surface-hover: #E7E7EE;
+      --border-subtle: #E1E1E8;
+      --border-medium: #CBCBD6;
+      
+      --text-main: #141418;
+      --text-muted: #575766;
+      --text-dim: #7C7C8C;
+      
+      --danger: #D9363E;
+      --danger-bg: rgba(217, 54, 62, 0.08);
+      --danger-border: rgba(217, 54, 62, 0.25);
+      --success: #389E0D;
+      --success-bg: rgba(56, 158, 13, 0.08);
+      --success-border: rgba(56, 158, 13, 0.25);
+      --warning: #D48806;
+      --warning-bg: rgba(212, 136, 6, 0.08);
+      --warning-border: rgba(212, 136, 6, 0.25);
+      --info: #096DD9;
+      --info-bg: rgba(9, 109, 217, 0.08);
+      --info-border: rgba(9, 109, 217, 0.25);
+      --purple: #722ED1;
+      --purple-bg: rgba(114, 46, 209, 0.08);
+      --purple-border: rgba(114, 46, 209, 0.25);
+
+      --shadow-card: 0 4px 18px rgba(0, 0, 0, 0.06);
+      --shadow-drawer: -6px 0 30px rgba(0, 0, 0, 0.15);
+      --header-bg: rgba(255, 255, 255, 0.95);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      background-color: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .header-inner {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      text-decoration: none;
+    }
+
+    .brand-logo {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    [data-theme="light"] .brand-logo {
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+    }
+
+    .brand-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border-medium);
+    }
+
+    .client-badge {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .client-badge .title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      letter-spacing: 0.08em;
+      color: var(--text-main);
+      line-height: 1;
+    }
+
+    .client-badge .sub {
+      font-size: 0.75rem;
+      color: var(--karin-yellow);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* THEME TOGGLE (LINDO Y DISCRETO) */
+    .theme-toggle-btn {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
+    }
+
+    .theme-toggle-btn:hover {
+      color: var(--karin-yellow);
+      border-color: var(--karin-yellow-border);
+      background: var(--bg-surface-hover);
+    }
+
+    .theme-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+    }
+
+    .theme-icon-wrap svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      display: block;
+    }
+
+    /* NAV TABS ESTILO KARIN (EDITORIAL, SIN PASTILLAS, LÍNEA AMARILLA INFERIOR) */
+    .nav-tabs {
+      display: flex;
+      background: transparent;
+      border: none;
+      padding: 0;
+      gap: 1.8rem;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      color: var(--text-muted);
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.5rem 0.2rem 0.65rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      box-shadow: none;
+    }
+
+    .nav-btn:hover {
+      color: var(--text-main);
+    }
+
+    .nav-btn.active {
+      background: transparent !important;
+      color: var(--karin-yellow) !important;
+      border-bottom: 2px solid var(--karin-yellow) !important;
+      box-shadow: none !important;
+    }
+
+    .badge-count {
+      background: var(--karin-yellow-light);
+      color: var(--karin-yellow);
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .nav-btn.active .badge-count {
+      background: var(--karin-yellow);
+      color: #000000;
+    }
+
+    /* MAIN CONTAINER */
+    main {
+      flex: 1;
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* VIEW SWITCHER */
+    .view-section {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ======================================================== */
+    /* VISTA 1: FORMULARIO WIZARD PASO A PASO (MODO CLIENTE)   */
+    /* ======================================================== */
+    .wizard-container {
+      max-width: 820px;
+      margin: 0 auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+
+    .wizard-header {
+      margin-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1.25rem;
+    }
+
+    .wizard-header h1 {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      letter-spacing: 0.05em;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+
+    .wizard-header h1 span {
+      color: var(--karin-yellow);
+    }
+
+    .wizard-header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* AVISO DE CONDICIONES: AMARILLO SÓLIDO, CUADRADO Y COMPACTO */
+    .terms-alert-box {
+      background: #FCBB15;
+      color: #000000;
+      border-radius: 0;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      padding: 0.95rem 1.25rem;
+      margin: 1.25rem 0 1.75rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .terms-alert-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+      color: #000000;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .terms-alert-text {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: #111111;
+      margin: 0;
+    }
+
+    .terms-alert-text strong {
+      color: #000000;
+      font-weight: 800;
+    }
+
+    .terms-alert-text em {
+      font-style: normal;
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.12);
+      padding: 1px 5px;
+    }
+
+    /* STEP NAVIGATION ESTILO KARIN (EDITORIAL, SIN PASTILLAS, LÍNEA AMARILLA INFERIOR) */
+    .steps-indicator {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 2.25rem;
+      gap: 2.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .steps-indicator::-webkit-scrollbar {
+      display: none;
+    }
+
+    .step-pill {
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0.6rem 0.1rem 0.85rem;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.45rem;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      position: relative;
+      border-bottom: 2px solid transparent !important;
+      margin-bottom: -1px;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .step-pill:hover {
+      color: var(--text-main);
+    }
+
+    .step-pill.current {
+      color: var(--karin-yellow) !important;
+      border-bottom: 2px solid var(--karin-yellow) !important;
+    }
+
+    .step-pill.completed {
+      color: var(--text-main);
+      border-bottom: 2px solid transparent !important;
+    }
+
+    .step-num {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+      background: transparent !important;
+      width: auto !important;
+      height: auto !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      line-height: 1;
+      display: inline;
+    }
+
+    .step-pill.current .step-num {
+      color: var(--karin-yellow);
+    }
+
+    .step-pill.completed .step-num {
+      color: var(--karin-yellow);
+    }
+
+    .step-info {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0.35rem;
+    }
+
+    .step-info .step-label {
+      display: none;
+    }
+
+    .step-info .step-title {
+      font-family: var(--font-display);
+      font-size: 1.45rem;
+      letter-spacing: 0.07em;
+      color: inherit;
+      font-weight: normal;
+    }
+
+    /* FORM STEP PANELS */
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .step-heading {
+      margin-bottom: 1.5rem;
+    }
+
+    .step-heading h2 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      letter-spacing: 0.04em;
+      color: var(--karin-yellow);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .step-heading p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* FORM CONTROLS */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    .col-full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    label {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .req {
+      color: var(--karin-yellow);
+      font-weight: bold;
+    }
+
+    .field-hint {
+      font-size: 0.77rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="datetime-local"],
+    input[type="date"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--karin-yellow);
+      box-shadow: 0 0 0 3px rgba(252, 187, 21, 0.2);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    /* VISUAL CARD SELECTORS (Tipo de Pieza) COMPACTOS Y JUNTOS */
+    .card-selector-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.35rem;
+    }
+
+    .card-choice {
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .card-choice input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      z-index: 2;
+    }
+
+    .choice-box {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0;
+      padding: 0.65rem 0.85rem;
+      min-width: 86px;
+      text-align: center;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      cursor: pointer;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    .choice-svg-icon {
+      width: 22px;
+      height: 22px;
+      stroke: var(--text-dim);
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s ease, transform 0.2s ease;
+    }
+
+    .choice-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    .card-choice input:checked + .choice-box {
+      border-color: var(--karin-yellow);
+      background: var(--karin-yellow-light);
+    }
+
+    .card-choice input:checked + .choice-box .choice-svg-icon {
+      stroke: var(--karin-yellow);
+      transform: scale(1.08);
+    }
+
+    .card-choice input:checked + .choice-box .choice-label {
+      color: var(--karin-yellow);
+      font-weight: 700;
+    }
+
+    /* URGENCY ALERT BOX */
+    .urgency-box {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      border-radius: var(--radius-md);
+      padding: 1.15rem;
+      margin-top: 0.5rem;
+    }
+
+    .urgency-toggle-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .urgency-text h4 {
+      color: var(--danger);
+      font-size: 0.98rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .urgency-text p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* CONDITIONAL BLOCKS */
+    .conditional-block {
+      background: var(--bg-surface-elevated);
+      border: 1px dashed var(--border-medium);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    .conditional-block.visible {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    /* FOOTER BUTTONS WIZARD */
+    .wizard-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.65rem 1.5rem;
+      border-radius: 0;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      border: 1px solid var(--border-medium);
+    }
+
+    .btn-secondary:hover {
+      color: var(--text-main);
+      background: var(--bg-surface-hover);
+      border-color: var(--text-main);
+    }
+
+    .btn-primary {
+      background: var(--karin-yellow);
+      color: #000000;
+      box-shadow: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--karin-yellow-hover);
+      transform: translateY(-1px);
+      box-shadow: none;
+    }
+
+    /* SUCCESS MODAL / SCREEN */
+    .success-card {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      display: none;
+    }
+
+    .success-card.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .success-icon-wrap {
+      width: 64px;
+      height: 64px;
+      background: var(--karin-yellow-light);
+      border: 2px solid var(--karin-yellow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      color: var(--karin-yellow);
+    }
+
+    .success-icon-wrap svg {
+      width: 28px;
+      height: 28px;
+      stroke: var(--karin-yellow);
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .success-card h2 {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      letter-spacing: 0.05em;
+      color: var(--karin-yellow);
+      margin-bottom: 0.5rem;
+    }
+
+    .order-id-badge {
+      display: inline-block;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-medium);
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 1.25rem;
+    }
+
+    .success-details {
+      max-width: 500px;
+      margin: 0 auto 2rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    .success-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .success-row:last-child {
+      border-bottom: none;
+    }
+
+    .success-row span:first-child {
+      color: var(--text-muted);
+    }
+
+
+    /* ======================================================== */
+    /* VISTA 2: PANEL DE GESTIÓN & SEGUIMIENTO (ZERO SIDESCROLL) */
+    /* ======================================================== */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .dashboard-header h1 {
+      font-family: var(--font-display);
+      font-size: 2.3rem;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+
+    .dashboard-header h1 span {
+      color: var(--karin-yellow);
+    }
+
+    /* KPI METRICS (ESTILO KARIN: EDITORIAL, BORDES RECTOS, NÚMEROS BEBAS NEUE) */
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.25rem;
+    }
+
+    .metric-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: 0;
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .metric-card:hover {
+      border-color: var(--karin-yellow);
+    }
+
+    .metric-val {
+      font-family: var(--font-display);
+      font-size: 3.4rem;
+      letter-spacing: 0.04em;
+      color: var(--text-main);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+
+    .metric-title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    .metric-card.urgent .metric-val {
+      color: var(--danger);
+    }
+
+    .metric-card.pending-mat .metric-val {
+      color: var(--warning);
+    }
+
+    .metric-card.in-progress .metric-val {
+      color: var(--karin-yellow);
+    }
+
+    /* CONTROLS & FILTER BAR (ESTILO MENÚ KARIN: SIN PASTILLAS, LÍNEA AMARILLA) */
+    .filter-bar {
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid var(--border-subtle);
+      border-radius: 0;
+      padding: 0 0 0.5rem 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      box-shadow: none;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 1.75rem;
+      overflow-x: auto;
+      margin-bottom: -1px;
+      scrollbar-width: none;
+    }
+    .filter-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-tab {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 0.5rem 0.2rem 0.75rem;
+      border-bottom: 2px solid transparent;
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .filter-tab:hover {
+      color: var(--text-main);
+    }
+
+    .filter-tab.active {
+      color: var(--karin-yellow) !important;
+      border-bottom: 2px solid var(--karin-yellow) !important;
+      background: transparent !important;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 280px;
+      margin-bottom: 0.35rem;
+    }
+
+    .search-box input {
+      padding-left: 2.2rem;
+      font-size: 0.88rem;
+      border-radius: 0;
+      border: 1px solid var(--border-medium);
+      background: var(--bg-surface);
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      stroke: var(--text-dim);
+      fill: none;
+      stroke-width: 2;
+      pointer-events: none;
+    }
+
+    /* CARDS GRID FOR ORDERS (ESTILO SEGUNDA CAPTURA: CUADRADOS RECTANGULARES CON BOTÓN AMARILLO) */
+    .orders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .order-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: 0;
+      padding: 1.75rem 1.75rem 1.5rem;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: none;
+    }
+
+    .order-card:hover {
+      border-color: var(--karin-yellow);
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .card-id-type {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .order-code {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      letter-spacing: 0.05em;
+      color: #000000;
+      background: var(--karin-yellow);
+      padding: 1px 7px;
+      border-radius: 0;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .order-piece-tag {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: transparent;
+      padding: 1px 7px;
+      border-radius: 0;
+      border: 1px solid var(--border-medium);
+      line-height: 1.3;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      padding: 2px 8px;
+      border-radius: 0;
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+
+    .status-badge::before {
+      display: none;
+    }
+
+    .status-nuevo { background: transparent; color: var(--info); border: 1px solid var(--info); }
+    .status-pendiente { background: transparent; color: var(--warning); border: 1px solid var(--warning); }
+    .status-diseno { background: transparent; color: var(--karin-yellow); border: 1px solid var(--karin-yellow); }
+    .status-revision { background: transparent; color: var(--purple); border: 1px solid var(--purple); }
+    .status-aprobado { background: transparent; color: var(--success); border: 1px solid var(--success); }
+    .status-finalizado { background: transparent; color: var(--text-dim); border: 1px solid var(--border-medium); }
+
+    .urgent-badge-pill {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+      padding: 1px 7px;
+      border-radius: 0;
+      font-family: var(--font-display);
+      font-size: 1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      line-height: 1.3;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.65rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
+      line-height: 1.15;
+    }
+
+    .card-desc {
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+      min-height: 42px;
+    }
+
+    .card-meta-list {
+      margin-top: auto;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      font-size: 0.84rem;
+    }
+
+    .card-btn-action {
+      background: var(--karin-yellow);
+      color: #000000;
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.65rem 1.25rem;
+      border: none;
+      border-radius: 0;
+      text-align: center;
+      width: 100%;
+      margin-top: 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: block;
+    }
+
+    .order-card:hover .card-btn-action {
+      background: var(--karin-yellow-hover);
+      transform: translateY(-1px);
+    }
+
+    .meta-item {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-dim);
+    }
+
+    .meta-item strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .urgent-badge-pill {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid var(--danger-border);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 0.73rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* DRAWER / DETALLE DEL PEDIDO (SIN SCROLL HORIZONTAL) */
+    .drawer-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .detail-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(680px, 92vw);
+      height: 100vh;
+      background: var(--bg-surface);
+      border-left: 1px solid var(--border-medium);
+      box-shadow: var(--shadow-drawer);
+      z-index: 1001;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .detail-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 1.25rem 1.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drawer-title-wrap h2 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      letter-spacing: 0.04em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .drawer-close {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.35rem;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+
+    .drawer-close:hover {
+      color: var(--text-main);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* SECCIONES EN EL DRAWER */
+    .drawer-section {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 0;
+      padding: 1.25rem;
+    }
+
+    .drawer-section-title {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      color: var(--karin-yellow);
+      margin-bottom: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.4rem;
+    }
+
+    .drawer-field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    .drawer-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .drawer-field.col-full {
+      grid-column: 1 / -1;
+    }
+
+    .df-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+
+    .df-val {
+      font-size: 0.9rem;
+      color: var(--text-main);
+      word-break: break-word;
+    }
+
+    .df-val a {
+      color: var(--karin-yellow);
+      text-decoration: underline;
+    }
+
+    /* SECCIÓN KARIN (INTERNA Y EDITABLE) */
+    .karin-internal-panel {
+      border: 1px solid var(--karin-yellow-border);
+      background: var(--karin-yellow-light);
+    }
+
+    .drawer-footer {
+      padding: 1rem 1.75rem;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* TOAST NOTIFICATION */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--karin-yellow);
+      color: var(--text-main);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      z-index: 2000;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      transform: translateY(20px);
+      pointer-events: none;
+      transition: all 0.25s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .nav-tabs {
+        width: 100%;
+        justify-content: center;
+      }
+      .steps-indicator {
+        gap: 1.25rem;
+        overflow-x: auto;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .drawer-field-grid {
+        grid-template-columns: 1fr;
+      }
+      .orders-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER BRANDING KARIN -->
+  <header>
+    <div class="header-inner">
+      <div class="brand-wrap">
+        <img class="brand-logo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png" alt="Karin Diseño">
+        <div class="brand-divider"></div>
+        <div class="client-badge">
+          <span class="title">SECURION</span>
+          <span class="sub">Portal de Pedidos & Diseño</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <!-- BOTÓN DE MODO OSCURO / CLARO (DISCRETO Y ELEGANTE) -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()" aria-label="Cambiar modo de color" title="Alternar modo claro / oscuro">
+          <span class="theme-icon-wrap" id="themeIconSlot"></span>
+        </button>
+
+        <!-- TABS DE NAVEGACIÓN -->
+        <nav class="nav-tabs">
+          <button class="nav-btn active" id="tabNewOrder" onclick="switchView('newOrder')">
+            <span>Nueva Solicitud</span>
+          </button>
+          <button class="nav-btn" id="tabDashboard" onclick="switchView('dashboard')">
+            <span>Panel de Gestión</span>
+            <span class="badge-count" id="ordersCounter">0</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 1: NUEVA SOLICITUD (WIZARD GUIADO PARA EL CLIENTE) -->
+    <!-- ======================================================== -->
+    <section id="viewNewOrder" class="view-section active">
+      <div class="wizard-container">
+        
+        <div class="wizard-header">
+          <h1>SOLICITUD DE <span>PIEZAS GRÁFICAS</span></h1>
+          <p>Completa el formulario en 4 pasos guiados. La información se guarda automáticamente mientras avanzas.</p>
+        </div>
+
+        <!-- AVISO DE CONDICIONES Y PLAZOS (AMARILLO SÓLIDO, CUADRADO Y COMPACTO) -->
+        <div class="terms-alert-box" id="termsAlertBox">
+          <div class="terms-alert-title">CONDICIONES DE ENTREGA Y PLAZOS</div>
+          <p class="terms-alert-text">
+            Los plazos comienzan a contar una vez que Karín recibe el <strong>contenido definitivo</strong> y todos los <strong>materiales necesarios</strong>. Si faltan recursos, el pedido se registrará pero quedará en estado <em>Pendiente de material</em>. La asignación de diseñador, control de cupos y evaluación de adicionales son gestionados directamente por el equipo de Karín.
+          </p>
+        </div>
+
+        <!-- INDICADOR DE PASOS ESTILO MENÚ KARIN -->
+        <nav class="steps-indicator" aria-label="Pasos de la solicitud">
+          <button type="button" class="step-pill current" id="pillStep1" onclick="goToStep(1)">
+            <span class="step-num">01.</span>
+            <span class="step-info"><span class="step-title">LA PIEZA</span></span>
+          </button>
+          <button type="button" class="step-pill" id="pillStep2" onclick="goToStep(2)">
+            <span class="step-num">02.</span>
+            <span class="step-info"><span class="step-title">CONTENIDO</span></span>
+          </button>
+          <button type="button" class="step-pill" id="pillStep3" onclick="goToStep(3)">
+            <span class="step-num">03.</span>
+            <span class="step-info"><span class="step-title">FECHAS</span></span>
+          </button>
+          <button type="button" class="step-pill" id="pillStep4" onclick="goToStep(4)">
+            <span class="step-num">04.</span>
+            <span class="step-info"><span class="step-title">REVISIÓN</span></span>
+          </button>
+        </nav>
+
+        <!-- FORMULARIO WIZARD -->
+        <form id="orderForm" onsubmit="event.preventDefault(); submitOrder();">
+
+          <!-- PASO 1: DEFINICIÓN DE LA PIEZA -->
+          <div class="form-step active" id="step1">
+            <div class="step-heading">
+              <h2>01. DEFINICIÓN DE LA PIEZA</h2>
+              <p>Indica el nombre del pedido, el formato requerido y el canal de difusión.</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group col-full">
+                <label for="orderName">Nombre del Pedido <span class="req">*</span></label>
+                <input type="text" id="orderName" placeholder="Ej: Carrusel de capacitaciones de octubre" required>
+                <span class="field-hint">Un título claro y descriptivo para identificar el trabajo.</span>
+              </div>
+
+              <div class="form-group col-full">
+                <label>Tipo de Pieza <span class="req">*</span></label>
+                <div class="card-selector-grid">
+                  <!-- Flyer -->
+                  <label class="card-choice">
+                    <input type="radio" name="pieceType" value="Flyer" checked>
+                    <div class="choice-box">
+                      <svg class="choice-svg-icon" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                      </svg>
+                      <span class="choice-label">Flyer</span>
+                    </div>
+                  </label>
+                  <!-- Carrusel -->
+                  <label class="card-choice">
+                    <input type="radio" name="pieceType" value="Carrusel">
+                    <div class="choice-box">
+                      <svg class="choice-svg-icon" viewBox="0 0 24 24">
+                        <rect x="2" y="3" width="15" height="18" rx="2" ry="2"></rect>
+                        <line x1="20" y1="8" x2="20" y2="16"></line>
+                        <line x1="22" y1="10" x2="22" y2="14"></line>
+                      </svg>
+                      <span class="choice-label">Carrusel</span>
+                    </div>
+                  </label>
+                  <!-- Mailing -->
+                  <label class="card-choice">
+                    <input type="radio" name="pieceType" value="Mailing">
+                    <div class="choice-box">
+                      <svg class="choice-svg-icon" viewBox="0 0 24 24">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                      </svg>
+                      <span class="choice-label">Mailing</span>
+                    </div>
+                  </label>
+                  <!-- Video -->
+                  <label class="card-choice">
+                    <input type="radio" name="pieceType" value="Video">
+                    <div class="choice-box">
+                      <svg class="choice-svg-icon" viewBox="0 0 24 24">
+                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                      </svg>
+                      <span class="choice-label">Video</span>
+                    </div>
+                  </label>
+                  <!-- Presentación -->
+                  <label class="card-choice">
+                    <input type="radio" name="pieceType" value="Presentación">
+                    <div class="choice-box">
+                      <svg class="choice-svg-icon" viewBox="0 0 24 24">
+                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                      </svg>
+                      <span class="choice-label">Presentación</span>
+                    </div>
+                  </label>
+                  <!-- Adaptación -->
+                  <label class="card-choice">
+                    <input type="radio" name="pieceType" value="Adaptación">
+                    <div class="choice-box">
+                      <svg class="choice-svg-icon" viewBox="0 0 24 24">
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <polyline points="9 21 3 21 3 15"></polyline>
+                        <line x1="21" y1="3" x2="14" y2="10"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                      </svg>
+                      <span class="choice-label">Adaptación</span>
+                    </div>
+                  </label>
+                  <!-- Otro -->
+                  <label class="card-choice">
+                    <input type="radio" name="pieceType" value="Otro">
+                    <div class="choice-box">
+                      <svg class="choice-svg-icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                      </svg>
+                      <span class="choice-label">Otro</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="pieceQuantity">Cantidad de piezas o versiones <span class="req">*</span></label>
+                <input type="text" id="pieceQuantity" placeholder="Ej: 1 versión presencial y 1 virtual" required>
+                <span class="field-hint">La contabilización de cupo la define Karín según el fee.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="channels">Canal de Uso <span class="req">*</span></label>
+                <select id="channels" required>
+                  <option value="">Selecciona el canal principal...</option>
+                  <option value="Humand">Humand</option>
+                  <option value="Correo electrónico">Correo electrónico</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Redes sociales">Redes sociales (LinkedIn / Instagram)</option>
+                  <option value="Impresión">Impresión física</option>
+                  <option value="Varios / Multicanal">Varios / Multicanal</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+
+              <div class="form-group col-full">
+                <label for="orderDescription">Descripción del Pedido <span class="req">*</span></label>
+                <textarea id="orderDescription" placeholder="¿Qué necesitan comunicar? ¿A quién está dirigido y qué elementos clave no pueden faltar?" required></textarea>
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <div></div>
+              <button type="button" class="btn btn-primary" onclick="validateAndNext(1)">Continuar a Contenido</button>
+            </div>
+          </div>
+
+          <!-- PASO 2: CONTENIDO & MATERIALES -->
+          <div class="form-step" id="step2">
+            <div class="step-heading">
+              <h2>02. CONTENIDO Y RECURSOS</h2>
+              <p>Comparte los textos y enlaces a logos, fotos o materiales necesarios.</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group col-full">
+                <label for="orderCopy">Texto o información que debe llevar la pieza <span class="req">*</span></label>
+                <textarea id="orderCopy" placeholder="Pega el texto aquí o comparte el enlace al Google Doc / Word con el copy redactado..." required style="min-height: 110px;"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="copyStatus">Estado del contenido / texto <span class="req">*</span></label>
+                <select id="copyStatus" required>
+                  <option value="Aprobado y definitivo">Aprobado y definitivo (listo para diseñar)</option>
+                  <option value="Borrador / Sujeto a cambios">Borrador (todavía puede cambiar)</option>
+                </select>
+                <span class="field-hint">Los plazos oficiales inician con texto definitivo.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="materialsComplete">¿Están completos los materiales necesarios? <span class="req">*</span></label>
+                <select id="materialsComplete" onchange="toggleMaterialsMissing(this.value)" required>
+                  <option value="Sí">Sí, todo está listo</option>
+                  <option value="No">No, faltan algunos insumos</option>
+                </select>
+              </div>
+
+              <!-- BLOQUE CONDICIONAL: MATERIALES FALTANTES -->
+              <div class="form-group col-full conditional-block" id="blockMissingMaterials">
+                <label for="missingMaterialsDetail" style="color: var(--warning);">Especifica qué materiales faltan y cuándo se enviarán <span class="req">*</span></label>
+                <textarea id="missingMaterialsDetail" placeholder="Ej: Falta la foto del orador en alta calidad, la enviaremos mañana a las 10:00..."></textarea>
+              </div>
+
+              <div class="form-group col-full">
+                <label for="materialsUrl">Enlaces a materiales y recursos (Drive, Dropbox, logos) <span class="req">*</span></label>
+                <input type="text" id="materialsUrl" placeholder="https://drive.google.com/... (Verificar que Karín tenga permisos de acceso)" required>
+                <span class="field-hint">Asegúrate de otorgar permisos de lectura/edición a Karín.</span>
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <button type="button" class="btn btn-secondary" onclick="goToStep(1)">Volver</button>
+              <button type="button" class="btn btn-primary" onclick="validateAndNext(2)">Continuar a Tiempos</button>
+            </div>
+          </div>
+
+          <!-- PASO 3: FECHAS Y URGENCIA -->
+          <div class="form-step" id="step3">
+            <div class="step-heading">
+              <h2>03. TIEMPOS Y PLAZOS DE ENTREGA</h2>
+              <p>Define cuándo necesitan la primera propuesta y la versión final terminada.</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="firstDeliveryDate">Fecha y hora de 1ª entrega (Propuesta) <span class="req">*</span></label>
+                <input type="datetime-local" id="firstDeliveryDate" required>
+                <span class="field-hint">Momento para revisar y enviar a aprobación interna.</span>
+              </div>
+
+              <div class="form-group">
+                <label for="finalDeliveryDate">Fecha y hora de Entrega Final <span class="req">*</span></label>
+                <input type="datetime-local" id="finalDeliveryDate" required>
+                <span class="field-hint">Pieza terminada con ajustes (no confundir con publicación).</span>
+              </div>
+
+              <!-- URGENCIA 24H -->
+              <div class="form-group col-full">
+                <div class="urgency-box">
+                  <div class="urgency-toggle-wrap">
+                    <div class="urgency-text">
+                      <h4>¿Solicitan una entrega urgente en 24 horas? <span class="req">*</span></h4>
+                      <p>Sujeto a confirmación de cupo y condiciones de urgencia por parte de Karín.</p>
+                    </div>
+                    <select id="isUrgent" style="max-width: 140px;" onchange="toggleUrgencyScope(this.value)" required>
+                      <option value="No">No</option>
+                      <option value="Sí">Sí</option>
+                    </select>
+                  </div>
+
+                  <!-- CONDICIONAL URGENCIA -->
+                  <div class="conditional-block" id="blockUrgencyScope">
+                    <label for="urgencyScope" style="color: var(--danger); margin-bottom: 0.35rem;">Indicar el alcance de la urgencia de 24h: <span class="req">*</span></label>
+                    <select id="urgencyScope">
+                      <option value="Primera propuesta dentro de las 24 horas">Primera propuesta dentro de las 24 horas</option>
+                      <option value="Versión final lista dentro de las 24 horas">Versión final terminada dentro de las 24 horas</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <button type="button" class="btn btn-secondary" onclick="goToStep(2)">Volver</button>
+              <button type="button" class="btn btn-primary" onclick="validateAndNext(3)">Continuar a Coordinación</button>
+            </div>
+          </div>
+
+          <!-- PASO 4: COORDINACIÓN Y DETALLES OPCIONALES -->
+          <div class="form-step" id="step4">
+            <div class="step-heading">
+              <h2>04. RESPONSABLES Y DETALLES ADICIONALES</h2>
+              <p>Datos de coordinación y referencias de diseño para asegurar el resultado esperado.</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="requesterName">Nombre y Apellido de quien solicita <span class="req">*</span></label>
+                <input type="text" id="requesterName" placeholder="Tu nombre completo" required>
+              </div>
+
+              <div class="form-group">
+                <label for="requesterEmail">Correo Electrónico <span class="req">*</span></label>
+                <input type="email" id="requesterEmail" placeholder="usuario@securion.com" required>
+              </div>
+
+              <div class="form-group col-full">
+                <label for="approverSecurion">Responsable de revisión y aprobación en Securion <span class="req">*</span></label>
+                <input type="text" id="approverSecurion" placeholder="Persona que reunirá los comentarios y dará el OK final" required>
+              </div>
+
+              <!-- CAMPOS OPCIONALES CLARAMENTE SEPARADOS -->
+              <div class="form-group col-full" style="margin-top: 0.5rem;">
+                <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--karin-yellow); font-weight: 700; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.35rem;">
+                  Campos Opcionales (puedes dejarlos en blanco si no aplican)
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="specificSize">Medidas o formato específico</label>
+                <input type="text" id="specificSize" placeholder="Ej: 1080x1080px o 'A definir por Karín'">
+              </div>
+
+              <div class="form-group">
+                <label for="eventDate">Fecha de publicación o evento</label>
+                <input type="date" id="eventDate">
+              </div>
+
+              <div class="form-group col-full">
+                <label for="visualReferences">Referencias visuales / Enlaces de Canva</label>
+                <input type="text" id="visualReferences" placeholder="Piezas anteriores, links de Canva o tableros de referencia">
+              </div>
+
+              <div class="form-group col-full">
+                <label for="observations">Observaciones adicionales</label>
+                <textarea id="observations" placeholder="Restricciones, preferencias o cualquier aclaración adicional..."></textarea>
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <button type="button" class="btn btn-secondary" onclick="goToStep(3)">Volver</button>
+              <button type="submit" class="btn btn-primary" style="font-size: 1rem; padding: 0.85rem 2rem;">Enviar Pedido a Karín</button>
+            </div>
+          </div>
+
+        </form>
+
+        <!-- PANTALLA DE ÉXITO -->
+        <div class="success-card" id="successCard">
+          <div class="success-icon-wrap">
+            <svg viewBox="0 0 24 24">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+          <h2>PEDIDO REGISTRADO CON ÉXITO</h2>
+          <div class="order-id-badge" id="successOrderId">#SEC-001</div>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">El equipo de diseño de Karín ya tiene tu solicitud para revisión.</p>
+          
+          <div class="success-details" id="successSummary">
+            <!-- Resumen dinámico -->
+          </div>
+
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-secondary" onclick="resetFormForNewOrder()">Hacer otra solicitud</button>
+            <button class="btn btn-primary" onclick="switchView('dashboard')">Ver en el Panel de Gestión</button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ======================================================== -->
+    <!-- VISTA 2: PANEL DE GESTIÓN & SEGUIMIENTO (ZERO SIDESCROLL) -->
+    <!-- ======================================================== -->
+    <section id="viewDashboard" class="view-section">
+      
+      <div class="dashboard-header">
+        <div>
+          <h1>PANEL DE GESTIÓN <span>SECURION</span></h1>
+          <p style="color: var(--text-muted);">Seguimiento de pedidos, asignación de responsables y control de cupos sin desplazamientos horizontales.</p>
+        </div>
+      </div>
+
+      <!-- METRICAS RESUMEN (ESTILO KARIN: BORDES RECTOS, TIPOGRAFÍA BEBAS NEUE) -->
+      <div class="metrics-bar">
+        <div class="metric-card">
+          <span class="metric-val" id="kpiTotal">0</span>
+          <span class="metric-title">Total Pedidos</span>
+        </div>
+        <div class="metric-card in-progress">
+          <span class="metric-val" id="kpiInProgress">0</span>
+          <span class="metric-title">En Diseño / Ajustes</span>
+        </div>
+        <div class="metric-card pending-mat">
+          <span class="metric-val" id="kpiPendingMat">0</span>
+          <span class="metric-title">Pendientes de Material</span>
+        </div>
+        <div class="metric-card urgent">
+          <span class="metric-val" id="kpiUrgent">0</span>
+          <span class="metric-title">Urgencias 24h</span>
+        </div>
+      </div>
+
+      <!-- BARRA DE FILTROS Y BÚSQUEDA (ESTILO MENÚ KARIN: SIN PASTILLAS, LÍNEA AMARILLA) -->
+      <div class="filter-bar">
+        <div class="filter-tabs">
+          <button type="button" class="filter-tab active" onclick="setFilter('all', this)">TODOS</button>
+          <button type="button" class="filter-tab" onclick="setFilter('urgente', this)">URGENTES 24H</button>
+          <button type="button" class="filter-tab" onclick="setFilter('pendiente_mat', this)">FALTA MATERIAL</button>
+          <button type="button" class="filter-tab" onclick="setFilter('en_diseno', this)">EN DISEÑO</button>
+          <button type="button" class="filter-tab" onclick="setFilter('revision', this)">EN REVISIÓN</button>
+          <button type="button" class="filter-tab" onclick="setFilter('finalizado', this)">FINALIZADOS</button>
+        </div>
+
+        <div class="search-box">
+          <svg class="search-icon-svg" viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="searchOrdersInput" placeholder="Buscar por pedido o solicitante..." oninput="renderOrders()">
+        </div>
+      </div>
+
+      <!-- LISTADO DE TARJETAS (SIN SCROLL HORIZONTAL) -->
+      <div class="orders-grid" id="ordersGrid">
+        <!-- Tarjetas dinámicas inyectadas por JS -->
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div id="emptyOrders" style="display: none; text-align: center; padding: 4rem 1rem; color: var(--text-dim);">
+        <div style="font-size: 1.1rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.25rem;">No hay pedidos en esta vista</div>
+        <p style="font-size: 0.85rem;">Prueba cambiando el filtro seleccionado o crea una nueva solicitud.</p>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- ======================================================== -->
+  <!-- DRAWER LATERAL DE DETALLE COMPLETO (ZERO SIDESCROLL)      -->
+  <!-- ======================================================== -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <aside class="detail-drawer" id="detailDrawer">
+    
+    <div class="drawer-header">
+      <div class="drawer-title-wrap">
+        <span class="order-code" id="drawerOrderCode">#SEC-001</span>
+        <h2 id="drawerOrderTitle" style="font-size: 1.35rem; margin-top: 4px;">Nombre del Pedido</h2>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()" title="Cerrar ventana" aria-label="Cerrar">
+        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="drawer-body" id="drawerBody">
+      <!-- Inyectado dinámicamente con todas las secciones organizadas verticalmente -->
+    </div>
+
+    <div class="drawer-footer">
+      <button class="btn btn-secondary" onclick="copyOrderSummary()">Copiar Resumen</button>
+      <button class="btn btn-primary" onclick="saveKarinEdits()">Guardar Cambios Karín</button>
+    </div>
+
+  </aside>
+
+  <!-- TOAST NOTIFICACIÓN -->
+  <div class="toast" id="toast">
+    <span id="toastMsg">Mensaje</span>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT DE LA APLICACIÓN                             -->
+  <!-- ======================================================== -->
+  <script>
+    // ICONOS SVG PROFESIONALES Y MINIMALISTAS (ESTÁNDAR LUCIDE)
+    const SVG_MOON = `<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>`;
+    const SVG_SUN = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>`;
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      const meta = document.querySelector('meta[name="color-scheme"]');
+      if (meta) {
+        meta.setAttribute('content', theme === 'dark' ? 'dark light' : 'light dark');
+      }
+      localStorage.setItem('karin_theme', theme);
+
+      const slot = document.getElementById('themeIconSlot');
+      const btn = document.getElementById('themeToggleBtn');
+      if (slot) {
+        if (theme === 'dark') {
+          slot.innerHTML = SVG_SUN;
+          if (btn) btn.setAttribute('title', 'Cambiar a modo claro');
+        } else {
+          slot.innerHTML = SVG_MOON;
+          if (btn) btn.setAttribute('title', 'Cambiar a modo oscuro');
+        }
+      }
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      const target = current === 'dark' ? 'light' : 'dark';
+      applyTheme(target);
+      showToast(`Modo ${target === 'dark' ? 'oscuro' : 'claro'} activado`);
+    }
+
+    // ESTADO GLOBAL & PERSISTENCIA LOCALSTORAGE
+    const STORAGE_KEY = 'karin_securion_orders_db_clean_v2';
+    let currentStep = 1;
+    let currentFilter = 'all';
+    let activeOrderId = null;
+
+    // PEDIDOS INICIALES SIN EMOJIS (LIMPIO Y PROFESIONAL)
+    const initialOrders = [
+      {
+        id: 'SEC-001',
+        name: 'Carrusel de capacitaciones de octubre',
+        pieceType: 'Carrusel',
+        quantity: '1 carrusel de 5 slides (versión virtual)',
+        channel: 'Humand',
+        description: 'Comunicar las 3 capacitaciones obligatorias de seguridad operativa para todo el personal.',
+        copy: 'Slide 1: Capacitaciones Obligatorias Octubre. Slide 2: Trabajo Seguro en Alturas. Slide 3: Primeros Auxilios. Slide 4: Manejo de Sustancias Peligrosas. Slide 5: Inscríbete en el link.',
+        copyStatus: 'Aprobado y definitivo',
+        materialsComplete: 'Sí',
+        missingMaterials: '',
+        materialsUrl: 'https://drive.google.com/drive/folders/ejemplo-securion-octubre',
+        firstDeliveryDate: '2026-11-08T14:00',
+        finalDeliveryDate: '2026-11-10T18:00',
+        isUrgent: 'No',
+        urgencyScope: '',
+        requesterName: 'Mariana López',
+        requesterEmail: 'mariana.lopez@securion.com',
+        approverSecurion: 'Carla Gómez (Gerencia RRHH)',
+        specificSize: '1080x1350px (Formato 4:5)',
+        eventDate: '2026-11-12',
+        visualReferences: 'Mantener la estética del carrusel de septiembre en Canva.',
+        observations: 'Priorizar logos de certificación vigentes en la portada.',
+        createdAt: '2026-11-04T10:30:00',
+        // GESTIÓN INTERNA KARÍN
+        internalStatus: 'En diseño',
+        karinAssignee: 'Gabriel Gómez',
+        quotaConsumption: '1 cupo',
+        hasAdditional: 'No',
+        additionalDetails: '',
+        materialReceivedDate: '2026-11-04T11:00',
+        rescheduledDate: '',
+        rescheduleReason: '',
+        deliverablesUrl: 'https://drive.google.com/drive/folders/entregas-karin-sec001',
+        karinNotes: 'Material completo recibido el 4/11. En proceso de diagramación.'
+      },
+      {
+        id: 'SEC-002',
+        name: 'Flyer Urgente: Comunicado Evacuación Simulacro',
+        pieceType: 'Flyer',
+        quantity: '1 versión digital + 1 adaptación para imprimir A4',
+        channel: 'WhatsApp',
+        description: 'Alerta sobre el simulacro de evacuación programado para este viernes en la planta central.',
+        copy: 'Simulacro General de Evacuación: Viernes 10:00 hs. Recordar seguir las indicaciones de los brigadistas.',
+        copyStatus: 'Aprobado y definitivo',
+        materialsComplete: 'Sí',
+        missingMaterials: '',
+        materialsUrl: 'https://drive.google.com/drive/folders/plano-evacuacion-planta',
+        firstDeliveryDate: '2026-11-06T10:00',
+        finalDeliveryDate: '2026-11-06T18:00',
+        isUrgent: 'Sí',
+        urgencyScope: 'Versión final terminada dentro de las 24 horas',
+        requesterName: 'Rodrigo Méndez',
+        requesterEmail: 'rodrigo.m@securion.com',
+        approverSecurion: 'Esteban Peralta',
+        specificSize: 'Digital 1080x1920 y A4 PDF print',
+        eventDate: '2026-11-07',
+        visualReferences: '',
+        observations: 'Texto rojo de advertencia institucional sin perder sobriedad.',
+        createdAt: '2026-11-05T08:00:00',
+        // GESTIÓN INTERNA KARÍN
+        internalStatus: 'Nuevo',
+        karinAssignee: 'Luz Guzmán',
+        quotaConsumption: '1 cupo',
+        hasAdditional: 'Sí - Urgencia 24h',
+        additionalDetails: 'Recargo del 25% por entrega express acordado en fee',
+        materialReceivedDate: '2026-11-05T08:15',
+        rescheduledDate: '',
+        rescheduleReason: '',
+        deliverablesUrl: '',
+        karinNotes: 'Se toma como urgencia confirmada. Entrega programada para hoy antes de las 18 hs.'
+      },
+      {
+        id: 'SEC-003',
+        name: 'Mailing Bienvenida Nuevos Ingresos Q4',
+        pieceType: 'Mailing',
+        quantity: '1 plantilla HTML / imagen',
+        channel: 'Correo electrónico',
+        description: 'Plantilla de bienvenida corporativa para los 15 nuevos ingresos del trimestre.',
+        copy: 'Pendiente de nombres definitivos y fotos corporativas.',
+        copyStatus: 'Borrador / Sujeto a cambios',
+        materialsComplete: 'No',
+        missingMaterials: 'Faltan 4 fotografías de los colaboradores y el listado de cargos aprobado.',
+        materialsUrl: 'https://drive.google.com/drive/folders/ingresos-q4-incompleto',
+        firstDeliveryDate: '2026-11-12T12:00',
+        finalDeliveryDate: '2026-11-15T18:00',
+        isUrgent: 'No',
+        urgencyScope: '',
+        requesterName: 'Carla Gómez',
+        requesterEmail: 'carla.gomez@securion.com',
+        approverSecurion: 'Carla Gómez',
+        specificSize: '600px ancho para email marketing',
+        eventDate: '',
+        visualReferences: '',
+        observations: '',
+        createdAt: '2026-11-03T16:00:00',
+        // GESTIÓN INTERNA KARÍN
+        internalStatus: 'Pendiente de material',
+        karinAssignee: 'A designar',
+        quotaConsumption: '0.5 cupo',
+        hasAdditional: 'No',
+        additionalDetails: '',
+        materialReceivedDate: '',
+        rescheduledDate: '',
+        rescheduleReason: 'Plazo en pausa hasta recepción de fotos faltantes.',
+        deliverablesUrl: '',
+        karinNotes: 'Esperando fotos faltantes de Carla Gómez para iniciar tiempo de diseño.'
+      }
+    ];
+
+    function getOrders() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialOrders));
+        return initialOrders;
+      }
+      return JSON.parse(stored);
+    }
+
+    function saveOrders(orders) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+      updateCounters();
+    }
+
+    // NAVEGACIÓN ENTRE VISTAS (FORMULARIO VS PANEL)
+    function switchView(viewName) {
+      document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+      if (viewName === 'newOrder') {
+        document.getElementById('viewNewOrder').classList.add('active');
+        document.getElementById('tabNewOrder').classList.add('active');
+      } else {
+        document.getElementById('viewDashboard').classList.add('active');
+        document.getElementById('tabDashboard').classList.add('active');
+        renderOrders();
+      }
+    }
+
+    // CONTROL DEL WIZARD DE 4 PASOS
+    function goToStep(step) {
+      if (step < 1 || step > 4) return;
+      currentStep = step;
+
+      document.querySelectorAll('.form-step').forEach((el, index) => {
+        el.classList.toggle('active', index === (step - 1));
+      });
+
+      for (let i = 1; i <= 4; i++) {
+        const pill = document.getElementById(`pillStep${i}`);
+        pill.classList.remove('current');
+        if (i < step) {
+          pill.classList.add('completed');
+        } else if (i === step) {
+          pill.classList.add('current');
+          pill.classList.remove('completed');
+        } else {
+          pill.classList.remove('completed');
+        }
+      }
+
+      window.scrollTo({ top: 100, behavior: 'smooth' });
+    }
+
+    function validateAndNext(step) {
+      let isValid = true;
+      let firstInvalid = null;
+
+      if (step === 1) {
+        const name = document.getElementById('orderName');
+        const qty = document.getElementById('pieceQuantity');
+        const channel = document.getElementById('channels');
+        const desc = document.getElementById('orderDescription');
+
+        [name, qty, channel, desc].forEach(field => {
+          if (!field.value.trim()) {
+            isValid = false;
+            field.style.borderColor = 'var(--danger)';
+            if (!firstInvalid) firstInvalid = field;
+          } else {
+            field.style.borderColor = '';
+          }
+        });
+      } else if (step === 2) {
+        const copy = document.getElementById('orderCopy');
+        const url = document.getElementById('materialsUrl');
+        const matComplete = document.getElementById('materialsComplete').value;
+        const missing = document.getElementById('missingMaterialsDetail');
+
+        [copy, url].forEach(field => {
+          if (!field.value.trim()) {
+            isValid = false;
+            field.style.borderColor = 'var(--danger)';
+            if (!firstInvalid) firstInvalid = field;
+          } else {
+            field.style.borderColor = '';
+          }
+        });
+
+        if (matComplete === 'No' && !missing.value.trim()) {
+          isValid = false;
+          missing.style.borderColor = 'var(--danger)';
+          if (!firstInvalid) firstInvalid = missing;
+        } else {
+          missing.style.borderColor = '';
+        }
+      } else if (step === 3) {
+        const d1 = document.getElementById('firstDeliveryDate');
+        const d2 = document.getElementById('finalDeliveryDate');
+
+        [d1, d2].forEach(field => {
+          if (!field.value.trim()) {
+            isValid = false;
+            field.style.borderColor = 'var(--danger)';
+            if (!firstInvalid) firstInvalid = field;
+          } else {
+            field.style.borderColor = '';
+          }
+        });
+      }
+
+      if (!isValid) {
+        showToast('Por favor completa los campos obligatorios requeridos.');
+        if (firstInvalid) firstInvalid.focus();
+        return;
+      }
+
+      goToStep(step + 1);
+    }
+
+    // CAMPOS CONDICIONALES
+    function toggleMaterialsMissing(value) {
+      const block = document.getElementById('blockMissingMaterials');
+      block.classList.toggle('visible', value === 'No');
+    }
+
+    function toggleUrgencyScope(value) {
+      const block = document.getElementById('blockUrgencyScope');
+      block.classList.toggle('visible', value === 'Sí');
+    }
+
+    // ENVIAR SOLICITUD
+    function submitOrder() {
+      const rName = document.getElementById('requesterName');
+      const rEmail = document.getElementById('requesterEmail');
+      const rAppr = document.getElementById('approverSecurion');
+
+      let isValid = true;
+      [rName, rEmail, rAppr].forEach(f => {
+        if (!f.value.trim()) {
+          isValid = false;
+          f.style.borderColor = 'var(--danger)';
+        } else {
+          f.style.borderColor = '';
+        }
+      });
+
+      if (!isValid) {
+        showToast('Por favor completa los datos de contacto y aprobación.');
+        return;
+      }
+
+      const orders = getOrders();
+      const nextNum = orders.length + 1;
+      const orderId = `SEC-${String(nextNum).padStart(3, '0')}`;
+
+      const selectedPieceRadio = document.querySelector('input[name="pieceType"]:checked');
+      const pieceTypeValue = selectedPieceRadio ? selectedPieceRadio.value : 'Otro';
+
+      const matStatus = document.getElementById('materialsComplete').value;
+      const isUrgent = document.getElementById('isUrgent').value;
+
+      let initialStatus = 'Nuevo';
+      if (matStatus === 'No') {
+        initialStatus = 'Pendiente de material';
+      }
+
+      const newOrder = {
+        id: orderId,
+        name: document.getElementById('orderName').value.trim(),
+        pieceType: pieceTypeValue,
+        quantity: document.getElementById('pieceQuantity').value.trim(),
+        channel: document.getElementById('channels').value,
+        description: document.getElementById('orderDescription').value.trim(),
+        copy: document.getElementById('orderCopy').value.trim(),
+        copyStatus: document.getElementById('copyStatus').value,
+        materialsComplete: matStatus,
+        missingMaterials: document.getElementById('missingMaterialsDetail').value.trim(),
+        materialsUrl: document.getElementById('materialsUrl').value.trim(),
+        firstDeliveryDate: document.getElementById('firstDeliveryDate').value,
+        finalDeliveryDate: document.getElementById('finalDeliveryDate').value,
+        isUrgent: isUrgent,
+        urgencyScope: isUrgent === 'Sí' ? document.getElementById('urgencyScope').value : '',
+        requesterName: rName.value.trim(),
+        requesterEmail: rEmail.value.trim(),
+        approverSecurion: rAppr.value.trim(),
+        specificSize: document.getElementById('specificSize').value.trim(),
+        eventDate: document.getElementById('eventDate').value,
+        visualReferences: document.getElementById('visualReferences').value.trim(),
+        observations: document.getElementById('observations').value.trim(),
+        createdAt: new Date().toISOString(),
+        // GESTIÓN INTERNA KARÍN
+        internalStatus: initialStatus,
+        karinAssignee: 'A designar',
+        quotaConsumption: 'A definir',
+        hasAdditional: isUrgent === 'Sí' ? 'Sí - Urgencia 24h' : 'No',
+        additionalDetails: isUrgent === 'Sí' ? 'Sujeto a confirmación por pedido urgente' : '',
+        materialReceivedDate: matStatus === 'Sí' ? new Date().toISOString().substring(0, 16) : '',
+        rescheduledDate: '',
+        rescheduleReason: '',
+        deliverablesUrl: '',
+        karinNotes: ''
+      };
+
+      orders.unshift(newOrder);
+      saveOrders(orders);
+
+      // Mostrar pantalla de éxito
+      document.getElementById('orderForm').style.display = 'none';
+      document.querySelector('.steps-indicator').style.display = 'none';
+      const termsAlert = document.getElementById('termsAlertBox');
+      if (termsAlert) termsAlert.style.display = 'none';
+      
+      const successCard = document.getElementById('successCard');
+      document.getElementById('successOrderId').textContent = `#${orderId}`;
+      document.getElementById('successSummary').innerHTML = `
+        <div class="success-row"><span>Pedido:</span><strong>${escapeHtml(newOrder.name)}</strong></div>
+        <div class="success-row"><span>Tipo de pieza:</span><strong>${escapeHtml(newOrder.pieceType)}</strong></div>
+        <div class="success-row"><span>Solicitante:</span><strong>${escapeHtml(newOrder.requesterName)}</strong></div>
+        <div class="success-row"><span>1ª Propuesta estimada:</span><strong>${formatDate(newOrder.firstDeliveryDate)}</strong></div>
+        <div class="success-row"><span>Estado Inicial:</span><strong style="color: ${matStatus === 'No' ? 'var(--warning)' : 'var(--karin-yellow)'};">${initialStatus}</strong></div>
+      `;
+      successCard.classList.add('active');
+      showToast('Pedido registrado correctamente.');
+    }
+
+    function resetFormForNewOrder() {
+      document.getElementById('orderForm').reset();
+      document.getElementById('orderForm').style.display = 'block';
+      document.querySelector('.steps-indicator').style.display = 'flex';
+      const termsAlert = document.getElementById('termsAlertBox');
+      if (termsAlert) termsAlert.style.display = 'block';
+      document.getElementById('successCard').classList.remove('active');
+      document.getElementById('blockMissingMaterials').classList.remove('visible');
+      document.getElementById('blockUrgencyScope').classList.remove('visible');
+      goToStep(1);
+    }
+
+    // RENDERIZADO DEL PANEL DE GESTIÓN (CARDS SIN SCROLL HORIZONTAL)
+    function renderOrders() {
+      const orders = getOrders();
+      const grid = document.getElementById('ordersGrid');
+      const empty = document.getElementById('emptyOrders');
+      const search = (document.getElementById('searchOrdersInput').value || '').toLowerCase().trim();
+
+      grid.innerHTML = '';
+
+      let filtered = orders.filter(o => {
+        if (currentFilter === 'urgente' && o.isUrgent !== 'Sí') return false;
+        if (currentFilter === 'pendiente_mat' && o.materialsComplete !== 'No' && !o.internalStatus.toLowerCase().includes('pendiente')) return false;
+        if (currentFilter === 'en_diseno' && !o.internalStatus.toLowerCase().includes('diseño') && !o.internalStatus.toLowerCase().includes('ajuste')) return false;
+        if (currentFilter === 'revision' && !o.internalStatus.toLowerCase().includes('revisión')) return false;
+        if (currentFilter === 'finalizado' && !o.internalStatus.toLowerCase().includes('finalizado') && !o.internalStatus.toLowerCase().includes('aprobado')) return false;
+
+        if (search) {
+          const matchName = (o.name || '').toLowerCase().includes(search);
+          const matchId = (o.id || '').toLowerCase().includes(search);
+          const matchReq = (o.requesterName || '').toLowerCase().includes(search);
+          const matchType = (o.pieceType || '').toLowerCase().includes(search);
+          if (!matchName && !matchId && !matchReq && !matchType) return false;
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        filtered.forEach(order => {
+          const card = document.createElement('div');
+          card.className = 'order-card';
+          card.onclick = () => openDrawer(order.id);
+
+          const statusClass = getStatusClass(order.internalStatus);
+          const isUrgentBadge = order.isUrgent === 'Sí' ? `<span class="urgent-badge-pill">Urgente 24h</span>` : '';
+
+          card.innerHTML = `
+            <div class="card-top">
+              <div class="card-id-type">
+                <span class="order-code">#${order.id}</span>
+                <span class="order-piece-tag">${escapeHtml(order.pieceType)}</span>
+                ${isUrgentBadge}
+              </div>
+              <span class="status-badge ${statusClass}">${escapeHtml(order.internalStatus)}</span>
+            </div>
+
+            <h3 class="card-title">${escapeHtml(order.name)}</h3>
+            <p class="card-desc">${escapeHtml(order.description)}</p>
+
+            <div class="card-meta-list">
+              <div class="meta-item">
+                <span>Solicita:</span>
+                <strong>${escapeHtml(order.requesterName)}</strong>
+              </div>
+              <div class="meta-item">
+                <span>1ª Entrega:</span>
+                <strong>${formatDate(order.firstDeliveryDate)}</strong>
+              </div>
+              <div class="meta-item">
+                <span>Responsable Karín:</span>
+                <strong style="color: var(--karin-yellow);">${escapeHtml(order.karinAssignee || 'Sin asignar')}</strong>
+              </div>
+              <div class="meta-item">
+                <span>Cupo / Fee:</span>
+                <strong>${escapeHtml(order.quotaConsumption || '1 cupo')}</strong>
+              </div>
+            </div>
+
+            <button type="button" class="card-btn-action">VER DETALLE</button>
+          `;
+
+          grid.appendChild(card);
+        });
+      }
+
+      updateCounters();
+    }
+
+    function getStatusClass(status) {
+      if (!status) return 'status-nuevo';
+      const s = status.toLowerCase();
+      if (s.includes('pendiente')) return 'status-pendiente';
+      if (s.includes('diseño') || s.includes('ajuste')) return 'status-diseno';
+      if (s.includes('revisión')) return 'status-revision';
+      if (s.includes('aprobado')) return 'status-aprobado';
+      if (s.includes('finalizado')) return 'status-finalizado';
+      return 'status-nuevo';
+    }
+
+    function setFilter(filterType, btn) {
+      currentFilter = filterType;
+      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderOrders();
+    }
+
+    function updateCounters() {
+      const orders = getOrders();
+      document.getElementById('ordersCounter').textContent = orders.length;
+      document.getElementById('kpiTotal').textContent = orders.length;
+
+      const inProgress = orders.filter(o => o.internalStatus.toLowerCase().includes('diseño') || o.internalStatus.toLowerCase().includes('ajuste')).length;
+      const pendingMat = orders.filter(o => o.materialsComplete === 'No' || o.internalStatus.toLowerCase().includes('pendiente')).length;
+      const urgents = orders.filter(o => o.isUrgent === 'Sí').length;
+
+      document.getElementById('kpiInProgress').textContent = inProgress;
+      document.getElementById('kpiPendingMat').textContent = pendingMat;
+      document.getElementById('kpiUrgent').textContent = urgents;
+    }
+
+    // DRAWER DE DETALLE & GESTIÓN INTERNA KARÍN
+    function openDrawer(orderId) {
+      const orders = getOrders();
+      const order = orders.find(o => o.id === orderId);
+      if (!order) return;
+
+      activeOrderId = orderId;
+      document.getElementById('drawerOrderCode').textContent = `#${order.id}`;
+      document.getElementById('drawerOrderTitle').textContent = order.name;
+
+      const body = document.getElementById('drawerBody');
+      const isUrgentTag = order.isUrgent === 'Sí' 
+        ? `<span class="urgent-badge-pill" style="margin-left: 0.5rem;">Urgencia 24h: ${escapeHtml(order.urgencyScope || 'Sí')}</span>` 
+        : '';
+
+      body.innerHTML = `
+        <!-- SECCIÓN 1: GESTIÓN INTERNA EXCLUSIVA DE KARÍN -->
+        <div class="drawer-section karin-internal-panel">
+          <div class="drawer-section-title">
+            <span>Control Karín (Uso Interno)</span>
+            <span style="font-size: 0.72rem; color: var(--karin-yellow); font-family: var(--font-body); font-weight: 600;">Securion no edita esta sección</span>
+          </div>
+          
+          <div class="drawer-field-grid">
+            <div class="drawer-field">
+              <label class="df-label">Estado del Pedido</label>
+              <select id="editStatus">
+                <option value="Nuevo" ${order.internalStatus.includes('Nuevo') ? 'selected' : ''}>Nuevo</option>
+                <option value="Pendiente de material" ${order.internalStatus.includes('Pendiente') ? 'selected' : ''}>Pendiente de material</option>
+                <option value="En diseño" ${order.internalStatus.includes('diseño') ? 'selected' : ''}>En diseño</option>
+                <option value="En revisión por Securion" ${order.internalStatus.includes('revisión') ? 'selected' : ''}>En revisión por Securion</option>
+                <option value="En ajustes" ${order.internalStatus.includes('ajustes') ? 'selected' : ''}>En ajustes</option>
+                <option value="Aprobado" ${order.internalStatus.includes('Aprobado') ? 'selected' : ''}>Aprobado</option>
+                <option value="Finalizado" ${order.internalStatus.includes('Finalizado') ? 'selected' : ''}>Finalizado</option>
+              </select>
+            </div>
+
+            <div class="drawer-field">
+              <label class="df-label">Responsable en Karín</label>
+              <select id="editAssignee">
+                <option value="A designar" ${order.karinAssignee === 'A designar' ? 'selected' : ''}>A designar</option>
+                <option value="Luz Guzmán" ${order.karinAssignee === 'Luz Guzmán' ? 'selected' : ''}>Luz Guzmán</option>
+                <option value="Gabriel Gómez" ${order.karinAssignee === 'Gabriel Gómez' ? 'selected' : ''}>Gabriel Gómez</option>
+                <option value="Karín (Dirección Creativa)" ${order.karinAssignee === 'Karín (Dirección Creativa)' ? 'selected' : ''}>Karín (Dirección Creativa)</option>
+              </select>
+            </div>
+
+            <div class="drawer-field">
+              <label class="df-label">Cómputo de Cupo (Fee)</label>
+              <input type="text" id="editQuota" value="${escapeHtml(order.quotaConsumption || '1 cupo')}" placeholder="Ej: 1 cupo, 0.5 cupo...">
+            </div>
+
+            <div class="drawer-field">
+              <label class="df-label">¿Aplica adicional / extra fee?</label>
+              <select id="editHasAdd">
+                <option value="No" ${order.hasAdditional === 'No' ? 'selected' : ''}>No</option>
+                <option value="Sí - Urgencia 24h" ${order.hasAdditional === 'Sí - Urgencia 24h' ? 'selected' : ''}>Sí - Urgencia 24h</option>
+                <option value="Sí - Exceso de cupo" ${order.hasAdditional === 'Sí - Exceso de cupo' ? 'selected' : ''}>Sí - Exceso de cupo</option>
+                <option value="Sí - Pedido fuera de alcance" ${order.hasAdditional === 'Sí - Pedido fuera de alcance' ? 'selected' : ''}>Sí - Pedido fuera de alcance</option>
+              </select>
+            </div>
+
+            <div class="drawer-field col-full">
+              <label class="df-label">Detalle / Justificación del Adicional</label>
+              <input type="text" id="editAddDetail" value="${escapeHtml(order.additionalDetails || '')}" placeholder="Monto o especificación del extra...">
+            </div>
+
+            <div class="drawer-field">
+              <label class="df-label">Fecha Material Completo (Inicio de plazo)</label>
+              <input type="datetime-local" id="editMatDate" value="${order.materialReceivedDate || ''}">
+            </div>
+
+            <div class="drawer-field">
+              <label class="df-label">Fecha Re-pactada de Entrega (Si hubo demoras)</label>
+              <input type="datetime-local" id="editReschedDate" value="${order.rescheduledDate || ''}">
+            </div>
+
+            <div class="drawer-field col-full">
+              <label class="df-label">Carpeta de Entregables Finales (Link Karín)</label>
+              <input type="text" id="editDeliverablesUrl" value="${escapeHtml(order.deliverablesUrl || '')}" placeholder="https://drive.google.com/drive/folders/entregables...">
+            </div>
+
+            <div class="drawer-field col-full">
+              <label class="df-label">Notas y Bitácora Interna Karín</label>
+              <textarea id="editKarinNotes" placeholder="Anotaciones privadas del equipo de diseño...">${escapeHtml(order.karinNotes || '')}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 2: INFORMACIÓN DEL PEDIDO (DATOS SECURION) -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>Ficha del Pedido</span>
+            ${isUrgentTag}
+          </div>
+
+          <div class="drawer-field-grid">
+            <div class="drawer-field">
+              <span class="df-label">Tipo de Pieza</span>
+              <span class="df-val"><strong>${escapeHtml(order.pieceType)}</strong></span>
+            </div>
+            <div class="drawer-field">
+              <span class="df-label">Versiones / Cantidad</span>
+              <span class="df-val">${escapeHtml(order.quantity)}</span>
+            </div>
+            <div class="drawer-field">
+              <span class="df-label">Canal Principal</span>
+              <span class="df-val">${escapeHtml(order.channel)}</span>
+            </div>
+            <div class="drawer-field">
+              <span class="df-label">Medidas / Formato</span>
+              <span class="df-val">${escapeHtml(order.specificSize || 'A definir por Karín')}</span>
+            </div>
+            <div class="drawer-field col-full">
+              <span class="df-label">Descripción del Objetivo</span>
+              <span class="df-val" style="white-space: pre-line;">${escapeHtml(order.description)}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECCIÓN 3: CONTENIDO & MATERIALES -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>Contenido y Recursos</span>
+            <span class="status-badge ${order.copyStatus === 'Aprobado y definitivo' ? 'status-aprobado' : 'status-pendiente'}">
+              ${escapeHtml(order.copyStatus)}
+            </span>
+          </div>
+
+          <div class="drawer-field-grid">
+            <div class="drawer-field col-full">
+              <span class="df-label">Texto / Información de la Pieza</span>
+              <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: 4px; font-size: 0.88rem; white-space: pre-wrap; color: var(--text-main);">
+                ${escapeHtml(order.copy)}
+              </div>
+            </div>
+
+            <div class="drawer-field">
+              <span class="df-label">¿Materiales completos?</span>
+              <span class="df-val" style="color: ${order.materialsComplete === 'Sí' ? 'var(--success)' : 'var(--warning)'}; font-weight: 700;">
+                ${order.materialsComplete === 'Sí' ? 'Completos' : 'Faltan insumos'}
+              </span>
+            </div>
+
+            <div class="drawer-field">
+              <span class="df-label">Carpeta de Recursos Securion</span>
+              <span class="df-val">
+                ${order.materialsUrl ? `<a href="${escapeHtml(order.materialsUrl)}" target="_blank" rel="noopener">Abrir Drive / Enlaces ↗</a>` : 'No proporcionado'}
+              </span>
+            </div>
+
+            ${order.materialsComplete === 'No' ? `
+              <div class="drawer-field col-full" style="background: var(--warning-bg); border: 1px solid var(--warning-border); padding: 0.75rem; border-radius: 4px;">
+                <span class="df-label" style="color: var(--warning);">Materiales faltantes especificados por el cliente:</span>
+                <span class="df-val">${escapeHtml(order.missingMaterials || 'No detallado')}</span>
+              </div>
+            ` : ''}
+
+            ${order.visualReferences ? `
+              <div class="drawer-field col-full">
+                <span class="df-label">Referencias visuales / Canva</span>
+                <span class="df-val">${escapeHtml(order.visualReferences)}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <!-- SECCIÓN 4: PLAZOS & CONTACTO -->
+        <div class="drawer-section">
+          <div class="drawer-section-title">
+            <span>Fechas Solicitadas y Contacto</span>
+          </div>
+
+          <div class="drawer-field-grid">
+            <div class="drawer-field">
+              <span class="df-label">1ª Entrega Solicitada (Original)</span>
+              <span class="df-val"><strong>${formatDate(order.firstDeliveryDate)}</strong></span>
+            </div>
+
+            <div class="drawer-field">
+              <span class="df-label">Entrega Final Solicitada (Original)</span>
+              <span class="df-val"><strong>${formatDate(order.finalDeliveryDate)}</strong></span>
+            </div>
+
+            <div class="drawer-field">
+              <span class="df-label">Solicitado por</span>
+              <span class="df-val">${escapeHtml(order.requesterName)} (${escapeHtml(order.requesterEmail)})</span>
+            </div>
+
+            <div class="drawer-field">
+              <span class="df-label">Aprobador Securion</span>
+              <span class="df-val">${escapeHtml(order.approverSecurion)}</span>
+            </div>
+
+            ${order.eventDate ? `
+              <div class="drawer-field">
+                <span class="df-label">Fecha de Publicación / Evento</span>
+                <span class="df-val">${order.eventDate}</span>
+              </div>
+            ` : ''}
+
+            ${order.observations ? `
+              <div class="drawer-field col-full">
+                <span class="df-label">Observaciones Adicionales</span>
+                <span class="df-val">${escapeHtml(order.observations)}</span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+
+      document.getElementById('drawerOverlay').classList.add('open');
+      document.getElementById('detailDrawer').classList.add('open');
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawerOverlay').classList.remove('open');
+      document.getElementById('detailDrawer').classList.remove('open');
+      activeOrderId = null;
+    }
+
+    // GUARDAR EDICIONES INTERNAS DE KARÍN
+    function saveKarinEdits() {
+      if (!activeOrderId) return;
+      const orders = getOrders();
+      const index = orders.findIndex(o => o.id === activeOrderId);
+      if (index === -1) return;
+
+      orders[index].internalStatus = document.getElementById('editStatus').value;
+      orders[index].karinAssignee = document.getElementById('editAssignee').value;
+      orders[index].quotaConsumption = document.getElementById('editQuota').value.trim();
+      orders[index].hasAdditional = document.getElementById('editHasAdd').value;
+      orders[index].additionalDetails = document.getElementById('editAddDetail').value.trim();
+      orders[index].materialReceivedDate = document.getElementById('editMatDate').value;
+      orders[index].rescheduledDate = document.getElementById('editReschedDate').value;
+      orders[index].deliverablesUrl = document.getElementById('editDeliverablesUrl').value.trim();
+      orders[index].karinNotes = document.getElementById('editKarinNotes').value.trim();
+
+      saveOrders(orders);
+      renderOrders();
+      showToast('Cambios de Karín guardados con éxito.');
+      closeDrawer();
+    }
+
+    // COPIAR RESUMEN RÁPIDO
+    function copyOrderSummary() {
+      if (!activeOrderId) return;
+      const orders = getOrders();
+      const o = orders.find(ord => ord.id === activeOrderId);
+      if (!o) return;
+
+      const summary = `PEDIDO #${o.id}: ${o.name}
+- Tipo: ${o.pieceType} (${o.quantity})
+- Canal: ${o.channel}
+- 1ª Entrega solicitada: ${formatDate(o.firstDeliveryDate)}
+- Entrega final solicitada: ${formatDate(o.finalDeliveryDate)}
+- Urgente 24h: ${o.isUrgent}
+- Solicitante: ${o.requesterName}
+- Estado actual: ${o.internalStatus}
+- Responsable Karín: ${o.karinAssignee}
+- Drive de materiales: ${o.materialsUrl || 'N/A'}`;
+
+      navigator.clipboard.writeText(summary).then(() => {
+        showToast('Resumen copiado al portapapeles.');
+      }).catch(() => {
+        showToast('No se pudo copiar automáticamente.');
+      });
+    }
+
+    // EXPORTAR A CSV (COMPATIBLE CON EXCEL Y AIRTABLE)
+    function exportToCsv() {
+      const orders = getOrders();
+      if (!orders.length) {
+        showToast('No hay pedidos para exportar.');
+        return;
+      }
+
+      const headers = [
+        'ID Pedido', 'Nombre del Pedido', 'Tipo Pieza', 'Versiones', 'Canal',
+        'Estado Interno', 'Responsable Karin', 'Cupo Fee', 'Aplica Adicional',
+        'Detalle Adicional', 'Fecha 1ra Entrega', 'Fecha Final', 'Urgente 24h',
+        'Solicitante', 'Email Solicitante', 'Aprobador Securion', 'Materiales Completos',
+        'Materiales Faltantes', 'Drive Recursos', 'Fecha Material Completo', 'Fecha Reprogramada',
+        'Notas Karin'
+      ];
+
+      const csvRows = [];
+      csvRows.push(headers.join(';'));
+
+      orders.forEach(o => {
+        const row = [
+          o.id,
+          `"${(o.name || '').replace(/"/g, '""')}"`,
+          `"${(o.pieceType || '').replace(/"/g, '""')}"`,
+          `"${(o.quantity || '').replace(/"/g, '""')}"`,
+          `"${(o.channel || '').replace(/"/g, '""')}"`,
+          `"${(o.internalStatus || '').replace(/"/g, '""')}"`,
+          `"${(o.karinAssignee || '').replace(/"/g, '""')}"`,
+          `"${(o.quotaConsumption || '').replace(/"/g, '""')}"`,
+          `"${(o.hasAdditional || '').replace(/"/g, '""')}"`,
+          `"${(o.additionalDetails || '').replace(/"/g, '""')}"`,
+          `"${o.firstDeliveryDate || ''}"`,
+          `"${o.finalDeliveryDate || ''}"`,
+          `"${o.isUrgent || 'No'}"`,
+          `"${(o.requesterName || '').replace(/"/g, '""')}"`,
+          `"${(o.requesterEmail || '').replace(/"/g, '""')}"`,
+          `"${(o.approverSecurion || '').replace(/"/g, '""')}"`,
+          `"${o.materialsComplete || ''}"`,
+          `"${(o.missingMaterials || '').replace(/"/g, '""')}"`,
+          `"${(o.materialsUrl || '').replace(/"/g, '""')}"`,
+          `"${o.materialReceivedDate || ''}"`,
+          `"${o.rescheduledDate || ''}"`,
+          `"${(o.karinNotes || '').replace(/"/g, '""')}"`
+        ];
+        csvRows.push(row.join(';'));
+      });
+
+      const csvContent = '\uFEFF' + csvRows.join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `Karin_Securion_Pedidos_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Archivo CSV descargado.');
+    }
+
+    // UTILIDADES
+    function formatDate(dateStr) {
+      if (!dateStr) return 'Sin definir';
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        return d.toLocaleDateString('es-AR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // INICIALIZACIÓN
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('karin_theme') || 'dark';
+      applyTheme(savedTheme);
+      updateCounters();
+      renderOrders();
+    });
+  </script>
+</body>
+</html>
