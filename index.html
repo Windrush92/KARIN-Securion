@@ -373,46 +373,7 @@
       border-radius: 0;
     }
 
-    .login-demo-helpers {
-      margin-top: 1.75rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--border-subtle);
-    }
-
-    .login-demo-title {
-      font-size: 0.76rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.65rem;
-      text-align: center;
-      font-weight: 600;
-    }
-
-    .login-demo-chips {
-      display: flex;
-      gap: 0.5rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .demo-chip-btn {
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-muted);
-      font-family: var(--font-body);
-      font-size: 0.78rem;
-      padding: 0.4rem 0.75rem;
-      border-radius: 0;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .demo-chip-btn:hover {
-      border-color: var(--karin-yellow);
-      color: var(--karin-yellow);
-      background: var(--bg-surface-hover);
-    }
+    
 
     /* SESIÓN DE USUARIO EN CABECERA */
     .user-session-wrap {
@@ -1673,18 +1634,7 @@
           </button>
         </form>
 
-        <div class="login-demo-helpers">
-          <div class="login-demo-title">Acceso rápido para pruebas:</div>
-          <div class="login-demo-chips">
-            <button type="button" class="demo-chip-btn" onclick="quickFillLogin('admin@karin-d.com', 'karin123')">
-              Karín (Admin)
-            </button>
-            <button type="button" class="demo-chip-btn" onclick="quickFillLogin('cliente@securion.com', 'securion123')">
-              Securion (Cliente)
-            </button>
-          </div>
         </div>
-      </div>
     </section>
 
     <!-- ======================================================== -->
@@ -2164,15 +2114,7 @@
     // ========================================================
     // Tu hermano puede sustituir la lógica de login() para conectar a su Base de Datos / API:
     const AuthService = {
-      // Usuarios de prueba preconfigurados
-      users: [
-        { email: 'admin@karin-d.com', pass: 'karin123', name: 'Karín Diseño', role: 'admin' },
-        { email: 'cliente@securion.com', pass: 'securion123', name: 'Securion', role: 'client' },
-        { email: 'karin', pass: '123', name: 'Karín Diseño', role: 'admin' }
-      ],
-
       async login(email, password) {
-        // 1. Detección automática de Hostinger (api/login.php con MySQL):
         try {
           const response = await fetch('api/login.php', {
             method: 'POST',
@@ -2183,14 +2125,11 @@
             const data = await response.json();
             if (data.success && data.user) return data.user;
           }
+          return null;
         } catch (err) {
-          // Si no está en un servidor PHP (ej. GitHub Pages o local), continúa al modo de prueba
+          console.error('Error al conectar con el servicio de autenticación:', err);
+          return null;
         }
-
-        // 2. Modo de prueba / demostración sin servidor (GitHub Pages o local):
-        const cleanEmail = (email || '').trim().toLowerCase();
-        const found = this.users.find(u => u.email.toLowerCase() === cleanEmail && u.pass === password);
-        return found ? { email: found.email, name: found.name, role: found.role } : null;
       },
 
       getCurrentUser() {
@@ -2264,12 +2203,6 @@
       AuthService.setCurrentUser(user);
       checkAuthState();
       showToast(`Bienvenido/a, ${user.name}`);
-    }
-
-    function quickFillLogin(email, pass) {
-      document.getElementById('loginEmail').value = email;
-      document.getElementById('loginPass').value = pass;
-      document.getElementById('loginForm').dispatchEvent(new Event('submit'));
     }
 
     // ICONOS SVG PROFESIONALES Y MINIMALISTAS (ESTÁNDAR LUCIDE)

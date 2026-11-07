@@ -38,11 +38,3 @@ CREATE TABLE IF NOT EXISTS `pedidos` (
   `notas_karin` TEXT NULL,
   `creado_en` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Usuarios de prueba iniciales (Contraseñas con hash BCRYPT seguro)
--- Contraseña admin@karin-d.com: karin123
--- Contraseña cliente@securion.com: securion123
-INSERT INTO `usuarios` (`nombre`, `email`, `password`, `rol`) VALUES
-('Karín Diseño', 'admin@karin-d.com', '$2y$10$wN1e1o7YmF6L8yGZqj211e0GqM58zKkW71X1P2pE3R8T.5hS8Pqre', 'admin'),
-('Securion', 'cliente@securion.com', '$2y$10$tW0dE2i4N5Q7xJ6zV1u8seW3Q8.Kq9P8Y2a0R9uV3R4S5hT6Pqre', 'cliente')
-ON DUPLICATE KEY UPDATE `nombre` = VALUES(`nombre`);
