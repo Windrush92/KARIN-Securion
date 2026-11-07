@@ -312,6 +312,152 @@
       animation: fadeIn 0.25s ease-in-out;
     }
 
+    /* ======================================================== */
+    /* VISTA DE LOGIN (MODULAR & ESTILO KARÍN)                  */
+    /* ======================================================== */
+    .login-container {
+      max-width: 440px;
+      margin: 3.5rem auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: 0;
+      padding: 2.5rem 2.25rem;
+      box-shadow: var(--shadow-card);
+      position: relative;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 1.5rem;
+    }
+
+    .login-logo {
+      height: 44px;
+      width: auto;
+      margin-bottom: 1rem;
+      object-fit: contain;
+    }
+
+    [data-theme="light"] .login-logo {
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.15));
+    }
+
+    .login-title {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      letter-spacing: 0.05em;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+      line-height: 1;
+    }
+
+    .login-title span {
+      color: var(--karin-yellow);
+    }
+
+    .login-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .login-error {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger);
+      padding: 0.65rem 0.85rem;
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+      display: none;
+      border-radius: 0;
+    }
+
+    .login-demo-helpers {
+      margin-top: 1.75rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .login-demo-title {
+      font-size: 0.76rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.65rem;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .login-demo-chips {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .demo-chip-btn {
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .demo-chip-btn:hover {
+      border-color: var(--karin-yellow);
+      color: var(--karin-yellow);
+      background: var(--bg-surface-hover);
+    }
+
+    /* SESIÓN DE USUARIO EN CABECERA */
+    .user-session-wrap {
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      padding-left: 0.5rem;
+      border-left: 1px solid var(--border-subtle);
+      margin-left: 0.25rem;
+    }
+
+    .user-pill-badge {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      white-space: nowrap;
+    }
+
+    .user-pill-badge strong {
+      color: var(--karin-yellow);
+      font-weight: 700;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-dim);
+      border-radius: 0;
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.65rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-logout:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+      background: var(--danger-bg);
+    }
+
     .view-section.active {
       display: block;
     }
@@ -1482,12 +1628,64 @@
             <span class="badge-count" id="ordersCounter">0</span>
           </button>
         </nav>
+
+        <!-- SESIÓN DE USUARIO -->
+        <div class="user-session-wrap" id="userSessionWrap">
+          <div class="user-pill-badge">
+            <span class="user-role-label">Usuario:</span>
+            <strong id="userNameDisplay">Karín Diseño</strong>
+          </div>
+          <button type="button" class="btn-logout" onclick="AuthService.logout()" title="Cerrar sesión">Salir</button>
+        </div>
       </div>
     </div>
   </header>
 
   <!-- CONTENIDO PRINCIPAL -->
   <main>
+
+    <!-- ======================================================== -->
+    <!-- VISTA 0: INICIO DE SESIÓN (GENÉRICO Y ADAPTABLE)         -->
+    <!-- ======================================================== -->
+    <section id="viewLogin" class="view-section">
+      <div class="login-container">
+        <div class="login-header">
+          <img class="login-logo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png" alt="Karín Diseño">
+          <h2 class="login-title">INICIAR <span>SESIÓN</span></h2>
+          <p class="login-subtitle">Ingresa tus credenciales para acceder al portal</p>
+        </div>
+
+        <div class="login-error" id="loginErrorBox" role="alert"></div>
+
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label for="loginEmail">Usuario o Correo Electrónico <span class="req">*</span></label>
+            <input type="text" id="loginEmail" class="form-control" placeholder="ej. admin@karin-d.com" required autocomplete="username">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.75rem;">
+            <label for="loginPass">Contraseña <span class="req">*</span></label>
+            <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem; font-size: 1.25rem;">
+            INGRESAR AL PORTAL
+          </button>
+        </form>
+
+        <div class="login-demo-helpers">
+          <div class="login-demo-title">Acceso rápido para pruebas:</div>
+          <div class="login-demo-chips">
+            <button type="button" class="demo-chip-btn" onclick="quickFillLogin('admin@karin-d.com', 'karin123')">
+              Karín (Admin)
+            </button>
+            <button type="button" class="demo-chip-btn" onclick="quickFillLogin('cliente@securion.com', 'securion123')">
+              Securion (Cliente)
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ======================================================== -->
     <!-- VISTA 1: NUEVA SOLICITUD (WIZARD GUIADO PARA EL CLIENTE) -->
@@ -1961,6 +2159,120 @@
   <!-- JAVASCRIPT DE LA APLICACIÓN                             -->
   <!-- ======================================================== -->
   <script>
+    // ========================================================
+    // SERVICIO DE AUTENTICACIÓN (DESACOPLADO & LISTO PARA TU HERMANO)
+    // ========================================================
+    // Tu hermano puede sustituir la lógica de login() para conectar a su Base de Datos / API:
+    const AuthService = {
+      // Usuarios de prueba preconfigurados
+      users: [
+        { email: 'admin@karin-d.com', pass: 'karin123', name: 'Karín Diseño', role: 'admin' },
+        { email: 'cliente@securion.com', pass: 'securion123', name: 'Securion', role: 'client' },
+        { email: 'karin', pass: '123', name: 'Karín Diseño', role: 'admin' }
+      ],
+
+      async login(email, password) {
+        /*
+         * >>> CONEXIÓN A BASE DE DATOS REAL (PARA TU HERMANO) <<<
+         * try {
+         *   const response = await fetch('https://tu-api.com/auth/login', {
+         *     method: 'POST',
+         *     headers: { 'Content-Type': 'application/json' },
+         *     body: JSON.stringify({ email, password })
+         *   });
+         *   if (!response.ok) throw new Error('Credenciales inválidas');
+         *   const data = await response.json();
+         *   return data.user; // { email, name, role, token }
+         * } catch (err) {
+         *   return null;
+         * }
+         */
+
+        // Simulación genérica actual (funciona sin servidor):
+        const cleanEmail = (email || '').trim().toLowerCase();
+        const found = this.users.find(u => u.email.toLowerCase() === cleanEmail && u.pass === password);
+        return found ? { email: found.email, name: found.name, role: found.role } : null;
+      },
+
+      getCurrentUser() {
+        try {
+          const raw = localStorage.getItem('karin_auth_user');
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          return null;
+        }
+      },
+
+      setCurrentUser(user) {
+        if (user) {
+          localStorage.setItem('karin_auth_user', JSON.stringify(user));
+        } else {
+          localStorage.removeItem('karin_auth_user');
+        }
+      },
+
+      logout() {
+        this.setCurrentUser(null);
+        checkAuthState();
+        showToast('Sesión cerrada correctamente.');
+      }
+    };
+
+    function checkAuthState() {
+      const user = AuthService.getCurrentUser();
+      const loginView = document.getElementById('viewLogin');
+      const navTabs = document.querySelector('.nav-tabs');
+      const userSessionWrap = document.getElementById('userSessionWrap');
+      const userNameDisplay = document.getElementById('userNameDisplay');
+
+      if (!user) {
+        // No logueado: mostrar login y ocultar vistas de trabajo
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        loginView.classList.add('active');
+        if (navTabs) navTabs.style.display = 'none';
+        if (userSessionWrap) userSessionWrap.style.display = 'none';
+      } else {
+        // Logueado: activar portal y sesión
+        loginView.classList.remove('active');
+        if (navTabs) navTabs.style.display = 'flex';
+        if (userSessionWrap) userSessionWrap.style.display = 'flex';
+        if (userNameDisplay) userNameDisplay.textContent = user.name;
+
+        // Si ninguna vista de trabajo está activa, ir a Nueva Solicitud por defecto
+        const newOrderActive = document.getElementById('viewNewOrder').classList.contains('active');
+        const dashActive = document.getElementById('viewDashboard').classList.contains('active');
+        if (!newOrderActive && !dashActive) {
+          switchView('newOrder');
+        }
+      }
+    }
+
+    async function handleLoginSubmit(event) {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPass').value;
+      const errorBox = document.getElementById('loginErrorBox');
+
+      errorBox.style.display = 'none';
+      const user = await AuthService.login(email, pass);
+
+      if (!user) {
+        errorBox.textContent = 'Credenciales incorrectas. Revisa el usuario y contraseña ingresados.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      AuthService.setCurrentUser(user);
+      checkAuthState();
+      showToast(`Bienvenido/a, ${user.name}`);
+    }
+
+    function quickFillLogin(email, pass) {
+      document.getElementById('loginEmail').value = email;
+      document.getElementById('loginPass').value = pass;
+      document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+    }
+
     // ICONOS SVG PROFESIONALES Y MINIMALISTAS (ESTÁNDAR LUCIDE)
     const SVG_MOON = `<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>`;
     const SVG_SUN = `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>`;
@@ -2867,6 +3179,7 @@
       applyTheme(savedTheme);
       updateCounters();
       renderOrders();
+      checkAuthState();
     });
   </script>
 </body>
