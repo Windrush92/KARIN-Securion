@@ -1026,6 +1026,66 @@
       flex-wrap: wrap;
     }
 
+    .card-top-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* BOTÓN CRUZ ELIMINAR PEDIDO (DISCRETO, AMARILLO Y CUADRADO) */
+    .btn-delete-card {
+      background: var(--karin-yellow-light);
+      border: 1px solid var(--karin-yellow);
+      color: var(--karin-yellow);
+      width: 26px;
+      height: 26px;
+      border-radius: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-delete-card:hover {
+      background: var(--karin-yellow);
+      color: #000000;
+      border-color: var(--karin-yellow);
+      transform: scale(1.06);
+    }
+
+    .btn-delete-card svg {
+      width: 14px;
+      height: 14px;
+      stroke: currentColor;
+      stroke-width: 2.2;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+      fill: none;
+      display: block;
+    }
+
+    .btn-danger-square {
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      border-radius: 0;
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.65rem 1.15rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-danger-square:hover {
+      background: var(--danger);
+      color: #FFFFFF;
+    }
+
     .card-id-type {
       display: flex;
       align-items: center;
@@ -1402,8 +1462,7 @@
         <img class="brand-logo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png" alt="Karin Diseño">
         <div class="brand-divider"></div>
         <div class="client-badge">
-          <span class="title">SECURION</span>
-          <span class="sub">Portal de Pedidos & Diseño</span>
+          <span class="title">PORTAL DE PEDIDOS</span>
         </div>
       </div>
 
@@ -1883,8 +1942,11 @@
     </div>
 
     <div class="drawer-footer">
-      <button class="btn btn-secondary" onclick="copyOrderSummary()">Copiar Resumen</button>
-      <button class="btn btn-primary" onclick="saveKarinEdits()">Guardar Cambios Karín</button>
+      <button type="button" class="btn btn-danger-square" onclick="deleteCurrentDrawerOrder()">Eliminar Pedido</button>
+      <div style="display: flex; gap: 0.75rem; align-items: center;">
+        <button class="btn btn-secondary" onclick="copyOrderSummary()">Copiar Resumen</button>
+        <button class="btn btn-primary" onclick="saveKarinEdits()">Guardar Cambios Karín</button>
+      </div>
     </div>
 
   </aside>
@@ -2333,7 +2395,15 @@
                 <span class="order-piece-tag">${escapeHtml(order.pieceType)}</span>
                 ${isUrgentBadge}
               </div>
-              <span class="status-badge ${statusClass}">${escapeHtml(order.internalStatus)}</span>
+              <div class="card-top-right">
+                <span class="status-badge ${statusClass}">${escapeHtml(order.internalStatus)}</span>
+                <button type="button" class="btn-delete-card" onclick="deleteOrder(event, '${order.id}')" title="Eliminar pedido #${order.id}" aria-label="Eliminar pedido">
+                  <svg viewBox="0 0 24 24">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <h3 class="card-title">${escapeHtml(order.name)}</h3>
@@ -2642,6 +2712,31 @@
       renderOrders();
       showToast('Cambios de Karín guardados con éxito.');
       closeDrawer();
+    }
+
+    // ELIMINAR PEDIDO
+    function deleteOrder(event, orderId) {
+      if (event) event.stopPropagation();
+
+      const confirmDelete = confirm(`¿Estás seguro de que deseas eliminar el pedido #${orderId}?\nEsta acción no se puede deshacer.`);
+      if (!confirmDelete) return;
+
+      let orders = getOrders();
+      orders = orders.filter(o => o.id !== orderId);
+      saveOrders(orders);
+
+      if (activeOrderId === orderId) {
+        closeDrawer();
+      }
+
+      updateCounters();
+      renderOrders();
+      showToast(`Pedido #${orderId} eliminado correctamente.`);
+    }
+
+    function deleteCurrentDrawerOrder() {
+      if (!activeOrderId) return;
+      deleteOrder(null, activeOrderId);
     }
 
     // COPIAR RESUMEN RÁPIDO
