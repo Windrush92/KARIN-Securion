@@ -2172,23 +2172,22 @@
       ],
 
       async login(email, password) {
-        /*
-         * >>> CONEXIÓN A BASE DE DATOS REAL (PARA TU HERMANO) <<<
-         * try {
-         *   const response = await fetch('https://tu-api.com/auth/login', {
-         *     method: 'POST',
-         *     headers: { 'Content-Type': 'application/json' },
-         *     body: JSON.stringify({ email, password })
-         *   });
-         *   if (!response.ok) throw new Error('Credenciales inválidas');
-         *   const data = await response.json();
-         *   return data.user; // { email, name, role, token }
-         * } catch (err) {
-         *   return null;
-         * }
-         */
+        // 1. Detección automática de Hostinger (api/login.php con MySQL):
+        try {
+          const response = await fetch('api/login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.user) return data.user;
+          }
+        } catch (err) {
+          // Si no está en un servidor PHP (ej. GitHub Pages o local), continúa al modo de prueba
+        }
 
-        // Simulación genérica actual (funciona sin servidor):
+        // 2. Modo de prueba / demostración sin servidor (GitHub Pages o local):
         const cleanEmail = (email || '').trim().toLowerCase();
         const found = this.users.find(u => u.email.toLowerCase() === cleanEmail && u.pass === password);
         return found ? { email: found.email, name: found.name, role: found.role } : null;
