@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <script src="js/config.js"></script>
+
+  <title>KARÍN | Ticketera de Mantenimiento — El Derecho (UCA)</title>
+  <meta name="description" content="Ticketera de soporte, mantenimiento técnico y control mensual de horas para El Derecho — Universidad Católica Argentina, operada por Karín.">
+  <link rel="icon" type="image/png" href="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=32,h=32,fit=crop,f=png/mv0lGExe8ySg27l9/favicon-karin-AR0VG83LXwT9lnw8.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:ital,wght@0,400..800;1,400..700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="session-pending">
+
+  <!-- ====================================================================== -->
+  <!-- HEADER: IDENTIDAD KARÍN + SELLO UCA SUTIL + NAVEGACIÓN EDITORIAL       -->
+  <!-- ====================================================================== -->
+  <header>
+    <div class="header-inner">
+      <div class="brand-wrap">
+        <img
+          class="brand-logo"
+          src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png"
+          alt="Karín"
+          width="112"
+          height="36"
+        >
+        <div class="brand-divider" aria-hidden="true"></div>
+        <div class="client-badge">
+          <span class="title">TICKETERA EL DERECHO</span>
+          <span class="sub">Soporte &amp; Mantenimiento Mensual</span>
+        </div>
+        <div class="uca-subtle-mark" title="Pontificia Universidad Católica Argentina — El Derecho">
+          <img
+            class="uca-seal-img"
+            src="assets/logo-uca.png"
+            alt="Sello Universidad Católica Argentina"
+            width="28"
+            height="28"
+          >
+          <span class="uca-subtle-label">UCA</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button
+          type="button"
+          class="theme-toggle-btn"
+          id="themeToggleBtn"
+          aria-label="Cambiar tema claro u oscuro"
+          title="Alternar modo claro / oscuro"
+        >
+          <span class="icon-to-dark" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+            <span class="visually-hidden">Cambiar a modo oscuro</span>
+          </span>
+          <span class="icon-to-light" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+            <span class="visually-hidden">Cambiar a modo claro</span>
+          </span>
+        </button>
+
+        <nav class="nav-tabs" id="mainNavTabs" aria-label="Navegación principal">
+          <button type="button" class="nav-btn active" id="tabNewTicket" data-view="newTicket">
+            <span>Generar Ticket</span>
+          </button>
+          <button type="button" class="nav-btn" id="tabDashboard" data-view="dashboard">
+            <span>Panel de Tickets</span>
+            <span class="badge-count" id="navTicketCount">0</span>
+          </button>
+          <button type="button" class="nav-btn" id="tabReport" data-view="report">
+            <span>Reporte Mensual</span>
+          </button>
+        </nav>
+
+        <div class="user-session-wrap" id="userSessionWrap">
+          <div class="user-pill-badge">
+            <span>Usuario:</span>
+            <strong id="userNameDisplay">-</strong>
+          </div>
+          <button type="button" class="btn-logout" id="logoutBtn" title="Cerrar sesión">Salir</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <p id="demoNotice" class="demo-notice" hidden>Vista previa local · Usá datos de ejemplo. Los tickets se guardan en este navegador.</p>
+
+    <!-- ==================================================================== -->
+    <!-- VISTA 0: LOGIN DESACOPLADO (ACTIVO CUANDO config.auth.requireAuth)   -->
+    <!-- ==================================================================== -->
+    <section id="viewLogin" class="view-section" aria-labelledby="loginTitle">
+      <div class="login-container">
+        <div class="login-header">
+          <img
+            class="login-logo"
+            src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png"
+            alt="Karín"
+          >
+          <h1 id="loginTitle" class="login-title">INICIAR <span>SESIÓN</span></h1>
+          <p class="login-subtitle">Acceso a la ticketera de mantenimiento de El Derecho</p>
+        </div>
+
+        <div class="login-error" id="loginErrorBox" role="alert"></div>
+
+        <form id="loginForm" novalidate>
+          <div class="form-group" style="margin-bottom: 1.15rem;">
+            <label for="loginEmail">Correo electrónico <span class="req">*</span></label>
+            <span id="loginEmailHint" class="field-hint">Ingresá el correo habilitado para el portal.</span>
+            <input
+              type="email"
+              id="loginEmail"
+              name="email"
+              required
+              autocomplete="username"
+              aria-describedby="loginEmailHint"
+              data-error="loginEmailError"
+            >
+            <div id="loginEmailError" class="error-msg">Error: Ingresá una dirección de correo válida.</div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="loginPass">Contraseña <span class="req">*</span></label>
+            <input
+              type="password"
+              id="loginPass"
+              name="password"
+              required
+              autocomplete="current-password"
+              data-error="loginPassError"
+            >
+            <div id="loginPassError" class="error-msg">Error: Ingresá tu contraseña.</div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem;">
+            INGRESAR A LA TICKETERA
+          </button>
+        </form>
+
+        <div class="login-uca-footnote">
+          <img class="uca-seal-img" src="assets/logo-uca.png" alt="" aria-hidden="true">
+          <span>El Derecho · Pontificia Universidad Católica Argentina</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- VISTA 1: NUEVO TICKET (WIZARD 3 PASOS SEGÚN PROPUESTA UCA)           -->
+    <!-- ==================================================================== -->
+    <section id="viewNewTicket" class="view-section active" aria-labelledby="wizardMainTitle">
+      <div class="wizard-container">
+        <div class="wizard-header">
+          <div>
+            <h1 id="wizardMainTitle">GENERAR TICKET <span>- SOPORTE Y MANTENIMIENTO</span></h1>
+            <p>Registrá incidencias, consultas técnicas o solicitudes de ajuste sobre la plataforma El Derecho.</p>
+          </div>
+        </div>
+
+        <nav class="steps-indicator" id="wizardStepsNav" aria-label="Pasos del registro de ticket">
+          <button type="button" class="step-tab current" id="stepTab1" data-step="1">
+            <span class="step-num">01.</span>
+            <span>SOLICITUD Y SERVICIO</span>
+          </button>
+          <button type="button" class="step-tab" id="stepTab2" data-step="2">
+            <span class="step-num">02.</span>
+            <span>PRIORIDAD Y DETALLE</span>
+          </button>
+          <button type="button" class="step-tab" id="stepTab3" data-step="3">
+            <span class="step-num">03.</span>
+            <span>REVISIÓN Y ENVÍO</span>
+          </button>
+        </nav>
+
+        <form id="ticketForm" novalidate>
+          <!-- PASO 1 -->
+          <div class="form-step active" id="formStep1">
+            <div class="step-heading">
+              <h2>01 · DATOS DEL SOLICITANTE Y CATEGORÍA</h2>
+              <p>Identificá quién realiza el pedido y el área de servicio correspondiente al abono.</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="requesterName">Nombre y apellido <span class="req">*</span></label>
+                <span id="requesterNameHint" class="field-hint">Persona de contacto en El Derecho / UCA.</span>
+                <input
+                  type="text"
+                  id="requesterName" maxlength="150"
+                  name="requesterName"
+                  required
+                  autocomplete="name"
+                  aria-describedby="requesterNameHint"
+                  data-error="requesterNameError"
+                >
+                <div id="requesterNameError" class="error-msg">Error: Indicá el nombre del solicitante.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="requesterEmail">Correo electrónico <span class="req">*</span></label>
+                <span id="requesterEmailHint" class="field-hint">Correo de contacto para el seguimiento del pedido.</span>
+                <input
+                  type="email"
+                  id="requesterEmail" maxlength="160"
+                  name="requesterEmail"
+                  required
+                  autocomplete="email"
+                  aria-describedby="requesterEmailHint"
+                  data-error="requesterEmailError"
+                >
+                <div id="requesterEmailError" class="error-msg">Error: Ingresá un correo en formato válido.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="requesterArea">Área / Equipo en El Derecho</label>
+                <span id="requesterAreaHint" class="field-hint">Opcional: área o equipo desde el que se realiza la solicitud.</span>
+                <input
+                  type="text"
+                  id="requesterArea" maxlength="120"
+                  name="requesterArea"
+                  aria-describedby="requesterAreaHint"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="requestKind">Naturaleza de la solicitud <span class="req">*</span></label>
+                <span id="requestKindHint" class="field-hint">Los criterios Menor vs. Mayor aplican a cambios y mejoras solicitados.</span>
+                <select id="requestKind" name="requestKind" required aria-describedby="requestKindHint">
+                  <option value="mantenimiento">Incidente / Mantenimiento / Consulta operativa</option>
+                  <option value="mejora">Cambio o mejora solicitada (UX/UI o funcionalidad)</option>
+                </select>
+              </div>
+
+              <div class="form-group col-full">
+                <label for="ticketTitle">Asunto del ticket <span class="req">*</span></label>
+                <span id="ticketTitleHint" class="field-hint">Título breve y descriptivo del problema o ajuste requerido.</span>
+                <input
+                  type="text"
+                  id="ticketTitle" maxlength="255"
+                  name="ticketTitle"
+                  required
+                  aria-describedby="ticketTitleHint"
+                  data-error="ticketTitleError"
+                >
+                <div id="ticketTitleError" class="error-msg">Error: Escribí un asunto claro para identificar el ticket.</div>
+              </div>
+
+              <div class="form-group col-full">
+                <span class="field-label">Servicio / Área técnica <span class="req">*</span></span>
+                <div class="card-selector-grid" id="categorySelectorGrid" role="radiogroup" aria-label="Categoría de servicio"></div>
+                <div class="category-helper-note" id="categoryHelperNote"></div>
+              </div>
+
+              <div class="form-group col-full">
+                <label for="linkedGroup">Mejora o iniciativa vinculada (opcional)</label>
+                <span id="linkedGroupHint" class="field-hint">Si este pedido forma parte de una misma mejora dividida en varios tickets, indicá el nombre para evaluarlos en conjunto.</span>
+                <input
+                  type="text"
+                  id="linkedGroup" maxlength="160"
+                  name="linkedGroup"
+                  aria-describedby="linkedGroupHint"
+                >
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <span></span>
+              <button type="button" class="btn btn-primary" data-next="2">Siguiente: Prioridad y Detalle</button>
+            </div>
+          </div>
+
+          <!-- PASO 2 -->
+          <div class="form-step" id="formStep2">
+            <div class="step-heading">
+              <h2>02 · PRIORIDAD, CONTEXTO TÉCNICO Y EVIDENCIA</h2>
+              <p>Seleccioná la prioridad según el impacto operativo y brindá la información necesaria para el diagnóstico.</p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group col-full">
+                <span class="field-label">Prioridad y compromiso de primera respuesta <span class="req">*</span></span>
+                <div class="priority-selector-grid" id="prioritySelectorGrid" role="radiogroup" aria-label="Prioridad del ticket"></div>
+              </div>
+
+              <div class="form-group col-full">
+                <label for="ticketDescription">Descripción detallada <span class="req">*</span></label>
+                <span id="ticketDescriptionHint" class="field-hint">Indicá el resultado esperado, qué ocurrió y a quién afecta. Para accesos o PDF distinguí suscriptor individual e institución. Para cobros identificá la etapa (pago, acceso o factura). Usá referencias sin contraseñas ni datos de tarjeta.</span>
+                <textarea
+                  id="ticketDescription" maxlength="8000"
+                  name="ticketDescription"
+                  required
+                  aria-describedby="ticketDescriptionHint"
+                  data-error="ticketDescriptionError"
+                ></textarea>
+                <div id="ticketDescriptionError" class="error-msg">Error: Ingresá una descripción detallada para poder diagnosticar el pedido.</div>
+              </div>
+
+              <div class="form-group">
+                <label for="affectedUrl">URL o sección afectada en El Derecho</label>
+                <span id="affectedUrlHint" class="field-hint">Enlace directo a la pantalla, buscador o formulario donde ocurre.</span>
+                <input
+                  type="url"
+                  id="affectedUrl" maxlength="2048"
+                  name="affectedUrl"
+                  aria-describedby="affectedUrlHint"
+                  data-error="affectedUrlError"
+                >
+                <div id="affectedUrlError" class="error-msg">Error: Ingresá una URL válida comenzando con https://</div>
+              </div>
+
+              <div class="form-group">
+                <label for="evidenceUrl">Enlace a capturas / documento de respaldo</label>
+                <span id="evidenceUrlHint" class="field-hint">Enlace HTTPS a una captura o documento con acceso restringido al equipo que atiende el caso.</span>
+                <input
+                  type="url"
+                  id="evidenceUrl" maxlength="2048"
+                  name="evidenceUrl"
+                  aria-describedby="evidenceUrlHint"
+                  data-error="evidenceUrlError"
+                >
+                <div id="evidenceUrlError" class="error-msg">Error: Ingresá un enlace válido comenzando con https://</div>
+              </div>
+
+              <div class="form-group col-full">
+                <label class="inline-check-card">
+                  <input type="checkbox" id="involvesAwsOrBackups" name="involvesAwsOrBackups">
+                  <span>
+                    <strong>Posible dependencia de infraestructura AWS o Backups (Sistemas UCA):</strong>
+                    Marcá esta casilla si el pedido podría requerir permisos de servidor, ampliación de recursos AWS o restauración de backups/snapshots.
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="wizard-actions">
+              <button type="button" class="btn btn-secondary" data-prev="1">Volver</button>
+              <button type="button" class="btn btn-primary" data-next="3">Siguiente: Revisión</button>
+            </div>
+          </div>
+
+          <!-- PASO 3 -->
+          <div class="form-step" id="formStep3">
+            <div class="step-heading">
+              <h2>03 · REVISIÓN PREVIA AL REGISTRO</h2>
+              <p>Verificá los datos antes de crear el ticket. El equipo evaluará el alcance y las horas estimadas antes de ejecutar mejoras.</p>
+            </div>
+
+            <div class="summary-box" id="wizardSummaryBox"></div>
+
+            <div class="wizard-actions">
+              <button type="button" class="btn btn-secondary" data-prev="2">Volver</button>
+              <button type="submit" class="btn btn-primary">REGISTRAR TICKET</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- PANTALLA DE ÉXITO -->
+        <div class="success-card" id="ticketSuccessCard">
+          <div class="success-icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h2>TICKET REGISTRADO</h2>
+          <div class="ticket-id-badge" id="successTicketId">#ED-000</div>
+          <div class="summary-box" id="successDetailsBox" style="max-width: 520px; margin: 0 auto 1.5rem; text-align: left;"></div>
+          <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
+            <button type="button" class="btn btn-secondary" id="btnNewAnotherTicket">Cargar Otro Ticket</button>
+            <button type="button" class="btn btn-primary" id="btnGoToDashboard">Ver en Panel de Tickets</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- VISTA 2: PANEL DE TICKETS & CONSUMO DE BOLSA DE HORAS                -->
+    <!-- ==================================================================== -->
+    <section id="viewDashboard" class="view-section" aria-labelledby="dashboardTitle">
+      <div class="dashboard-header">
+        <div>
+          <h1 id="dashboardTitle">PANEL DE TICKETS <span>EL DERECHO</span></h1>
+          <p>Seguimiento operativo, validación de alcance (menor vs. mayor) y control de la bolsa mensual de 30 horas.</p>
+        </div>
+        <div class="month-picker-inline">
+          <label for="dashboardMonthSelect">Mes contable:</label>
+          <input type="month" aria-label="Mes del panel" id="dashboardMonthSelect">
+        </div>
+      </div>
+
+      <!-- Barra FIFO de Bolsa Mensual de Horas -->
+      <p class="no-contract-notice" id="dashboardContractNotice" hidden></p>
+      <div class="hours-pool-panel" id="hoursPoolPanel">
+        <div class="hours-pool-top">
+          <div>
+            <div class="hours-pool-title">BOLSA DE HORAS DEL MES · <span id="poolMonthLabel">NOVIEMBRE 2026</span></div>
+            <div class="hours-pool-subtitle">Prioridad de consumo: primero se utilizan las horas trasladadas del mes anterior (vencen a fin de mes, máx. 30 h) y luego la bolsa de 30 h del mes.</div>
+          </div>
+          <div class="hours-pool-numbers">
+            <div class="pool-stat">
+              <span class="pool-stat-val" id="poolCarryoverDisplay">0 h</span>
+              <span class="pool-stat-label">Trasladadas disp.</span>
+            </div>
+            <div class="pool-stat">
+              <span class="pool-stat-val" id="poolConsumedDisplay">0 h</span>
+              <span class="pool-stat-label">Consumidas (bolsa)</span>
+            </div>
+            <div class="pool-stat">
+              <span class="pool-stat-val accent" id="poolRemainingDisplay">30 h</span>
+              <span class="pool-stat-label">Saldo disponible</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hours-progress-track" role="img" id="hoursProgressTrack" aria-label="Progreso de consumo mensual de horas">
+          <div class="hours-progress-carry" id="barCarryUsed" style="width: 0%;"></div>
+          <div class="hours-progress-current" id="barCurrentUsed" style="width: 0%;"></div>
+          <div class="hours-progress-over" id="barOverUsed" style="width: 0%;"></div>
+        </div>
+
+        <div class="hours-pool-legend">
+          <div class="legend-items">
+            <span class="legend-item"><span class="legend-swatch carry"></span><span id="legendCarryText">Trasladadas: 0 / 0 h</span></span>
+            <span class="legend-item"><span class="legend-swatch current"></span><span id="legendCurrentText">Mes actual: 0 / 30 h</span></span>
+            <span class="legend-item"><span class="legend-swatch remaining"></span><span id="legendNextCarryText">Traslado estimado próximo mes: 30 h</span></span>
+          </div>
+          <div id="legendMajorHoursText">Desarrollos mayores / presupuesto aparte: 0 h</div>
+        </div>
+      </div>
+
+      <!-- 4 KPIs Rectangulares -->
+      <div class="metrics-bar">
+        <div class="metric-card accent">
+          <span class="metric-val" id="kpiRemainingHours">30 h</span>
+          <span class="metric-title">Saldo Mensual Disponible</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val" id="kpiActiveTickets">0</span>
+          <span class="metric-title">Tickets Activos</span>
+        </div>
+        <div class="metric-card urgent">
+          <span class="metric-val" id="kpiHighPriority">0</span>
+          <span class="metric-title">Críticos y Altos Abiertos</span>
+        </div>
+        <div class="metric-card purple">
+          <span class="metric-val" id="kpiMajorScope">0</span>
+          <span class="metric-title">Ajustes Mayores / Aparte</span>
+        </div>
+      </div>
+
+      <!-- Filtros Editoriales + Buscador -->
+      <div class="filter-bar">
+        <div class="filter-tabs" id="dashboardFilterTabs" role="group" aria-label="Filtrar tickets">
+          <button type="button" class="filter-tab active" data-filter="todos" aria-pressed="true">Todos</button>
+          <button type="button" class="filter-tab" data-filter="criticos" aria-pressed="false">Críticos / Altos</button>
+          <button type="button" class="filter-tab" data-filter="activos" aria-pressed="false">En Curso</button>
+          <button type="button" class="filter-tab" data-filter="sistemas_uca" aria-pressed="false">Sistemas UCA (AWS)</button>
+          <button type="button" class="filter-tab" data-filter="mayores" aria-pressed="false">Presupuesto Aparte</button>
+          <button type="button" class="filter-tab" data-filter="resueltos" aria-pressed="false">Resueltos</button>
+        </div>
+
+        <div class="search-box">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="searchTicketsInput" placeholder="Buscar..." aria-label="Buscar tickets">
+        </div>
+      </div>
+
+      <div class="tickets-grid" id="ticketsGrid"></div>
+      <div class="empty-state" id="emptyTicketsState">
+        No se encontraron tickets para los filtros seleccionados en este período.
+      </div>
+    </section>
+
+    <!-- ==================================================================== -->
+    <!-- VISTA 3: REPORTE MENSUAL DE HORAS (APARTADO 4 DEL PRESUPUESTO)       -->
+    <!-- ==================================================================== -->
+    <section id="viewReport" class="view-section" aria-labelledby="reportMainTitle">
+      <div class="dashboard-header">
+        <div>
+          <h1 id="reportMainTitle">REPORTE MENSUAL <span>DE HORAS</span></h1>
+          <p>Consumo y saldo por período según la fecha de cada intervención. Los registros anteriores conservan su mes de imputación y muestran la fecha de alta.</p>
+        </div>
+      </div>
+
+      <div class="report-toolbar">
+        <div class="report-controls">
+          <div class="report-control-group">
+            <label for="reportMonthSelect">Período del reporte</label>
+            <input type="month" id="reportMonthSelect">
+          </div>
+          <div class="report-control-group">
+            <label for="carryoverInput">Traslado del mes anterior (hasta 30 h)</label>
+            <input type="number" id="carryoverInput" min="0" max="30" step="0.01" value="0">
+          </div>
+        </div>
+
+        <div class="report-actions">
+          <button type="button" class="btn btn-secondary" id="btnExportCsv">Exportar CSV</button>
+          <button type="button" class="btn btn-primary" id="btnPrintReport">Imprimir / Guardar PDF</button>
+        </div>
+      </div>
+
+      <p class="no-contract-notice" hidden></p>
+      <div class="report-sheet" id="reportSheet">
+        <div class="report-sheet-header">
+          <div class="report-sheet-title">
+            <h2>REPORTE DE MANTENIMIENTO · <span id="reportPeriodHeading">NOVIEMBRE 2026</span></h2>
+            <p>El Derecho — Pontificia Universidad Católica Argentina | Abono mensual: hasta 30 h incluidas</p>
+          </div>
+          <div class="report-brands">
+            <img class="brand-logo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png" alt="Karín">
+            <div class="brand-divider" aria-hidden="true"></div>
+            <img class="uca-seal-img" src="assets/logo-uca.png" alt="UCA">
+          </div>
+        </div>
+
+        <div class="report-summary-grid" id="reportSummaryGrid"></div>
+
+        <div tabindex="0" role="region" aria-labelledby="monthly-report-caption" class="table-wrapper">
+          <table class="report-table">
+            <caption id="monthly-report-caption">Detalle mensual de tareas y consumo de horas — El Derecho (UCA)</caption>
+            <thead>
+              <tr>
+                <th scope="col">Ticket / Tarea</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Categoría / Alcance</th>
+                <th scope="col">Horas</th>
+                <th scope="col">Responsable</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Imputación / Saldo</th>
+              </tr>
+            </thead>
+            <tbody id="reportTableBody"></tbody>
+          </table>
+        </div>
+
+        <p class="report-footnote" id="reportFootnote"></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================== -->
+  <!-- FOOTER INSTITUCIONAL SUTIL                                             -->
+  <!-- ====================================================================== -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-uca">
+        <img class="uca-seal-img" src="assets/logo-uca.png" alt="" aria-hidden="true">
+        <span>Plataforma El Derecho · Pontificia Universidad Católica Argentina</span>
+      </div>
+      <span>Mantenimiento técnico, soporte y control de bolsa mensual operado por Karín</span>
+    </div>
+  </footer>
+
+  <!-- ====================================================================== -->
+  <!-- NATIVE <DIALOG>: DRAWER DE GESTIÓN DE TICKET                           -->
+  <!-- ====================================================================== -->
+  <dialog id="detailDialog" class="drawer-dialog" closedby="any" aria-labelledby="drawerTicketTitle">
+    <div class="drawer-header">
+      <div>
+        <div class="drawer-header-meta" id="drawerHeaderMeta"></div>
+        <h2 id="drawerTicketTitle">Detalle del Ticket</h2>
+      </div>
+      <button type="button" class="btn-close-dialog" id="btnCloseDetailDialog" aria-label="Cerrar panel de ticket">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="drawer-body">
+      <!-- Datos reportados por El Derecho -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <span>Información de la Solicitud</span>
+          <span id="drawerSlaBadge" class="prio-badge"></span>
+        </div>
+        <div class="detail-grid" id="drawerClientDetails"></div>
+      </div>
+
+      <!-- Evaluador de Alcance -->
+      <div class="drawer-section">
+        <div class="drawer-section-title">
+          <span>Validación de Alcance</span>
+        </div>
+        <div class="form-grid" style="margin-bottom: 0.85rem;">
+          <div class="form-group">
+            <label for="editRequestKind">Tipo de trabajo</label>
+            <select id="editRequestKind">
+              <option value="mantenimiento">Incidente / Mantenimiento ordinario</option>
+              <option value="mejora">Cambio / Mejora solicitada (evaluar 4 criterios)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editEstimatedHours">Horas estimadas (incl. revisión y pruebas)</label>
+            <input type="number" id="editEstimatedHours" min="0" max="500" step="0.5" value="0">
+          </div>
+        </div>
+
+        <div id="scopeCriteriaContainer" class="scope-criteria-list"></div>
+        <div id="scopeVerdictBanner" class="scope-verdict-banner"></div>
+      </div>
+
+      <!-- Gestión interna Karín e imputación de horas -->
+      <div class="drawer-section karin-zone">
+        <div class="drawer-section-title">
+          <span>Gestión Interna e Imputación de Horas</span>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editStatus">Estado operativo</label>
+            <select id="editStatus"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="editAssignee">Responsable asignado</label>
+            <input type="text" id="editAssignee" maxlength="120">
+          </div>
+
+          <div class="form-group">
+            <label for="editHoursLogged">Horas del registro anterior</label>
+            <input type="number" id="editHoursLogged" min="0" max="500" step="0.01" value="0">
+          </div>
+
+          <div class="form-group">
+            <label for="editBillingMonth">Mes del registro anterior</label>
+            <input type="month" id="editBillingMonth" required>
+          </div>
+
+          <div class="form-group">
+            <label for="editBillingMode">Imputación contractual</label>
+            <select id="editBillingMode">
+              <option value="bolsa">Bolsa mensual incluida (30 h / trasladadas)</option>
+              <option value="presupuesto_aparte">Presupuesto aparte (Ajuste mayor)</option>
+              <option value="sin_cargo_uca">Intervención de Sistemas UCA sin cargo a la bolsa</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editFirstResponseAt">Primera respuesta efectiva</label>
+            <input type="datetime-local" id="editFirstResponseAt">
+          </div>
+
+          <div class="form-group col-full">
+            <label for="editSeparateQuoteRef">Referencia a la conformidad de la UCA (para iniciar un trabajo aparte)</label>
+            <input type="text" id="editSeparateQuoteRef" maxlength="160">
+          </div>
+
+          <div class="form-group col-full">
+            <label for="editTechnicalNotes">Diagnóstico, acciones realizadas y notas de seguimiento</label>
+            <textarea id="editTechnicalNotes" maxlength="8000"></textarea>
+          </div>
+        </div>
+      </div>
+
+    <div class="worklog-area">
+      <h3>Intervenciones registradas</h3>
+      <ul id="workHistory"></ul>
+      <fieldset id="workEntry"><legend>Registrar una intervención</legend>
+        <div class="form-grid">
+          <div class="form-group"><label for="workDate">Fecha de trabajo</label><input type="date" id="workDate"></div>
+          <div class="form-group"><label for="workHours">Horas de esta intervención</label><input type="number" min="0.01" max="500" step="0.01" id="workHours"></div>
+          <div class="form-group"><label for="workAssignee">Responsable de la intervención</label><input id="workAssignee" maxlength="120" placeholder="Responsable asignado"></div>
+          <div class="form-group"><label for="workMode">Imputación de la intervención</label><select id="workMode"><option value="bolsa">Bolsa mensual</option><option value="presupuesto_aparte">Presupuesto aparte</option><option value="sin_cargo_uca">Sin cargo UCA</option></select></div>
+          <div class="form-group col-full"><label for="workDescription">Tarea realizada</label><input id="workDescription" maxlength="500"></div>
+        </div>
+      </fieldset>
+    </div>
+    </div>
+    <div class="drawer-footer">
+      <button type="button" class="btn btn-danger-square" id="btnDeleteFromDrawer">Eliminar</button>
+      <div class="drawer-footer-actions">
+        <button type="button" class="btn btn-secondary" id="btnCopyTicketSummary">Copiar Resumen</button>
+        <button type="button" class="btn btn-primary" id="btnSaveTicketChanges">Guardar Cambios</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- ====================================================================== -->
+  <!-- NATIVE <DIALOG>: CONFIRMACIÓN DE ELIMINACIÓN                           -->
+  <!-- ====================================================================== -->
+  <dialog id="confirmDeleteDialog" class="confirm-dialog" closedby="any" aria-labelledby="confirmDeleteTitle">
+    <h2 id="confirmDeleteTitle">ELIMINAR TICKET</h2>
+    <p id="confirmDeleteText">¿Confirmás la eliminación permanente de este ticket? Esta acción no se puede deshacer.</p>
+    <form method="dialog" class="confirm-dialog-actions">
+      <button type="submit" value="cancel" class="btn btn-secondary" autofocus>Cancelar</button>
+      <button type="submit" value="confirm" class="btn btn-danger-square">Eliminar Ticket</button>
+    </form>
+  </dialog>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast" role="status" aria-live="polite">
+    <span id="toastMsg"></span>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
