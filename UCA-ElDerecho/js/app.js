@@ -19,7 +19,8 @@
    * ESTADO DE LA APLICACIÓN
    * ======================================================================== */
   let currentFilter = 'todos';
-  const online = location.protocol !== 'file:';
+  const isStaticPreview = location.protocol === 'file:' || /(^|\.)github\.io$/i.test(location.hostname);
+  const online = !isStaticPreview;
   let signedUser = null;
   let csrf = '';
   let sharedTickets = [];

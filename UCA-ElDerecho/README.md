@@ -9,9 +9,9 @@ Portal de soporte, seguimiento y control mensual de horas para El Derecho — Po
 3. **Tarjetas y detalle de ticket:** muestra número `#ED-...`, título, descripción, estado y prioridad en texto de color sin chips, *Solicitado por*, *Responsable* en dorado (*Equipo Técnico Karín*, *Sistemas UCA* o *Karín y Sistemas UCA*), *Horas utilizadas* con aclaración de aplicación a bolsa o presupuesto aparte, y botón **VER DETALLE** (modo consulta con capturas adjuntas para administrativos; gestión, intervenciones y eliminación solo para Karín).
 4. **Reporte mensual de horas:** selector de período y botones **CSV** y **PDF** integrados en el encabezado del reporte, 7 indicadores de solo lectura, tabla con área de atención amigable, horas con coma decimal y aplicación/saldo FIFO. Incluye un modal separado **Ajuste de saldo** exclusivo para administración (`admin`), con registro de actor y motivo.
 
-## Vista local (archivo `index.html`)
+## Vista local / GitHub Pages (sin servidor PHP)
 
-Al abrir `index.html` directamente desde el sistema de archivos (`file://`), la interfaz funciona en modo local usando los datos de ejemplo configurados en `js/config.js` y `localStorage`. En el servidor compartido (HTTPS), el portal siempre exige inicio de sesión por cuenta habilitada.
+Al abrir `index.html` directamente desde el sistema de archivos (`file://`) o desde un hosting estático de GitHub Pages (`*.github.io`), la interfaz funciona en modo interactivo local usando los datos de ejemplo de `js/config.js` y `localStorage`. En cualquier servidor compartido PHP/HTTPS (producción), el portal siempre exige inicio de sesión por cuenta habilitada.
 
 ## Versión compartida (Servidor PHP + MySQL/MariaDB)
 
