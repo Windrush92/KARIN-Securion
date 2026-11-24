@@ -18,6 +18,18 @@ CREATE TABLE IF NOT EXISTS `bolsa_mensual_horas` (
   `actualizado_en` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `bolsa_mensual_ajustes` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `periodo_mes` CHAR(7) NOT NULL,
+  `horas_anterior` DECIMAL(5,2) NULL,
+  `horas_nueva` DECIMAL(5,2) NOT NULL,
+  `motivo` VARCHAR(255) NOT NULL,
+  `usuario_id` INT NOT NULL,
+  `usuario_nombre` VARCHAR(120) NOT NULL,
+  `fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_ajustes_periodo` (`periodo_mes`, `fecha`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS `tickets` (
   `id` VARCHAR(20) PRIMARY KEY COMMENT 'Formato ED-001',
   `asunto` VARCHAR(255) NOT NULL,
@@ -25,6 +37,7 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   `categoria_servicio` VARCHAR(60) NOT NULL,
   `prioridad` ENUM('critica', 'alta', 'normal', 'baja') NOT NULL DEFAULT 'normal',
   `estado` VARCHAR(50) NOT NULL DEFAULT 'Nuevo',
+  `solicitante_id` INT NULL,
   `solicitante_nombre` VARCHAR(150) NOT NULL,
   `solicitante_email` VARCHAR(160) NOT NULL,
   `solicitante_area` VARCHAR(120) NULL,
@@ -33,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   `descripcion` TEXT NOT NULL,
   `mejora_vinculada` VARCHAR(160) NULL,
   `involucra_aws_backups` TINYINT(1) NOT NULL DEFAULT 0,
-  `criterios_alcance_json` JSON NULL COMMENT '4 criterios acumulativos del Apartado 5',
+  `criterios_alcance_json` JSON NULL COMMENT '4 criterios acumulativos del presupuesto',
   `horas_estimadas` DECIMAL(6,2) NOT NULL DEFAULT 0.00,
   `horas_consumidas` DECIMAL(6,2) NOT NULL DEFAULT 0.00,
   `imputacion_contractual` ENUM('bolsa', 'presupuesto_aparte', 'sin_cargo_uca') NOT NULL DEFAULT 'bolsa',
@@ -46,33 +59,60 @@ CREATE TABLE IF NOT EXISTS `tickets` (
   `actualizado_en` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX `idx_tickets_mes` (`mes_imputacion`),
   INDEX `idx_tickets_estado` (`estado`),
-  INDEX `idx_tickets_prioridad` (`prioridad`)
+  INDEX `idx_tickets_prioridad` (`prioridad`),
+  INDEX `idx_tickets_solicitante` (`solicitante_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS ticketera_intentos (
-  origen CHAR(64) PRIMARY KEY,
-  ventana BIGINT NOT NULL,
-  cantidad INT UNSIGNED NOT NULL
+SET @has_sol_id = (
+  SELECT COUNT(*) FROM information_schema.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'tickets' AND COLUMN_NAME = 'solicitante_id'
+);
+SET @sql_sol_id = IF(
+  @has_sol_id = 0,
+  'ALTER TABLE `tickets` ADD COLUMN `solicitante_id` INT NULL AFTER `estado`, ADD INDEX `idx_tickets_solicitante` (`solicitante_id`)',
+  'SELECT 1'
+);
+PREPARE stmt_sol_id FROM @sql_sol_id;
+EXECUTE stmt_sol_id;
+DEALLOCATE PREPARE stmt_sol_id;
+
+CREATE TABLE IF NOT EXISTS `ticketera_adjuntos` (
+  `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `ticket_id` VARCHAR(20) NOT NULL,
+  `nombre_archivo` VARCHAR(180) NOT NULL,
+  `mime_type` VARCHAR(64) NOT NULL,
+  `tamano_bytes` INT UNSIGNED NOT NULL,
+  `contenido` MEDIUMBLOB NOT NULL,
+  `subido_por` INT NOT NULL,
+  `creado_en` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_adjuntos_ticket` (`ticket_id`),
+  CONSTRAINT `fk_adjuntos_ticket` FOREIGN KEY (`ticket_id`) REFERENCES `tickets`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `ticketera_intentos` (
+  `origen` CHAR(64) PRIMARY KEY,
+  `ventana` BIGINT NOT NULL,
+  `cantidad` INT UNSIGNED NOT NULL
 ) ENGINE=InnoDB;
 
-CREATE TABLE IF NOT EXISTS ticketera_historial (
-  evento BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  ticket_id VARCHAR(20) NOT NULL,
-  usuario_id INT NOT NULL,
-  accion VARCHAR(16) NOT NULL,
-  anterior JSON NULL,
-  posterior JSON NULL,
-  fecha DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  INDEX idx_historial_ticket (ticket_id, evento)
+CREATE TABLE IF NOT EXISTS `ticketera_historial` (
+  `evento` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `ticket_id` VARCHAR(20) NOT NULL,
+  `usuario_id` INT NOT NULL,
+  `accion` VARCHAR(24) NOT NULL,
+  `anterior` JSON NULL,
+  `posterior` JSON NULL,
+  `fecha` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_historial_ticket` (`ticket_id`, `evento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS ticketera_control (
-  id TINYINT PRIMARY KEY
+CREATE TABLE IF NOT EXISTS `ticketera_control` (
+  `id` TINYINT PRIMARY KEY
 ) ENGINE=InnoDB;
-INSERT IGNORE INTO ticketera_control (id) VALUES (1);
+INSERT IGNORE INTO `ticketera_control` (`id`) VALUES (1);
 
-CREATE TABLE IF NOT EXISTS ticketera_partes (
-  ticket_id VARCHAR(20) PRIMARY KEY,
-  registros JSON NOT NULL,
-  CONSTRAINT fk_partes_ticket FOREIGN KEY (ticket_id) REFERENCES tickets(id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS `ticketera_partes` (
+  `ticket_id` VARCHAR(20) PRIMARY KEY,
+  `registros` JSON NOT NULL,
+  CONSTRAINT `fk_partes_ticket` FOREIGN KEY (`ticket_id`) REFERENCES `tickets`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

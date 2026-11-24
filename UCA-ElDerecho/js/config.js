@@ -1,21 +1,17 @@
 // Aplicar la preferencia de tema antes del primer render.
 (function () {
-    try {
-      var savedScheme = localStorage.getItem('color-scheme');
-      var effective = savedScheme || 'light';
-      document.querySelector('meta[name="color-scheme"]').content = effective;
-      if (effective === 'dark' || effective === 'light') {
-        document.documentElement.setAttribute('data-theme', effective);
-      }
-    } catch (e) {}
+  try {
+    var savedScheme = localStorage.getItem('color-scheme');
+    var effective = savedScheme || 'light';
+    document.querySelector('meta[name="color-scheme"]').content = effective;
+    if (effective === 'dark' || effective === 'light') {
+      document.documentElement.setAttribute('data-theme', effective);
+    }
+  } catch (e) {}
 })();
 
 /**
  * Configuración centralizada — Ticketera de Mantenimiento El Derecho (UCA)
- * Fuente: Propuesta Preliminar · Noviembre 2026 (Mantenimiento mensual de El Derecho)
- *
- * Modificar este archivo para ajustar parámetros contractuales, categorías, SLAs,
- * estados o activar la autenticación contra el backend de Hostinger.
  */
 window.UCA_TICKETERA_CONFIG = {
   brand: {
@@ -23,22 +19,26 @@ window.UCA_TICKETERA_CONFIG = {
     portalTitle: 'TICKETERA EL DERECHO',
     clientName: 'El Derecho · UCA',
     clientFullName: 'Pontificia Universidad Católica Argentina — El Derecho',
-    proposalLabel: 'Mantenimiento Mensual · Propuesta Noviembre 2026',
-    karinLogoUrl: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png',
+    karinLogoLightUrl: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png',
+    karinLogoDarkUrl: 'assets/karin-oscuro.png',
     karinFaviconUrl: 'https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=32,h=32,fit=crop,f=png/mv0lGExe8ySg27l9/favicon-karin-AR0VG83LXwT9lnw8.png',
     ucaLogoPath: 'assets/logo-uca.png'
   },
 
-  // HTTP(S) requiere sesión en PHP. El archivo local permite probar con datos de ejemplo.
   demoStartMonth: '2026-11',
   auth: {
     loginEndpoint: 'api/login.php',
-    ticketsEndpoint: 'api/tickets.php'
+    ticketsEndpoint: 'api/tickets.php',
+    attachmentsEndpoint: 'api/adjuntos.php',
+    balanceEndpoint: 'api/bolsa.php'
   },
 
-  /**
-   * Parámetros del abono mensual (Apartados 4, 5 y 6 del presupuesto)
-   */
+  attachments: {
+    maxFiles: 5,
+    maxBytesPerFile: 5 * 1024 * 1024,
+    allowedMimes: ['image/png', 'image/jpeg', 'image/webp', 'image/gif']
+  },
+
   contract: {
     monthlyHoursIncluded: 30,
     maxCarryoverHours: 30,
@@ -50,75 +50,74 @@ window.UCA_TICKETERA_CONFIG = {
     storageKeys: {
       tickets: 'uca_elderecho_tickets_v1',
       carryoverByMonth: 'uca_elderecho_carryover_v1',
+      balanceAdjustments: 'uca_elderecho_balance_adjustments_v1',
       theme: 'color-scheme'
     }
   },
 
   /**
-   * Apartado 1 y Apartado 2 — Servicios incluidos y coordinación con Sistemas UCA
+   * 5 áreas de atención visibles en el formulario y en el reporte mensual
    */
   serviceCategories: [
     {
       id: 'gestion_soporte',
       label: 'Gestión y soporte',
-      fullName: 'Gestión, reuniones y soporte',
-      description: 'Seguimiento, recepción y priorización de pedidos, consultas e incidencias derivadas por El Derecho.',
-      icon: 'headset',
-      defaultTrack: 'mantenimiento'
+      fullName: 'Gestión y soporte',
+      description: 'Atención y seguimiento de consultas, solicitudes e inconvenientes con la plataforma.',
+      icon: 'headset'
     },
     {
-      id: 'ux_ui_menor',
-      label: 'Ajustes UX/UI',
-      fullName: 'Iteraciones y ajustes menores (UX/UI)',
-      description: 'Cambios acotados en componentes existentes: botones, colores, textos, mensajes, espaciados y navegación.',
-      icon: 'layout',
-      defaultTrack: 'mejora'
+      id: 'diseno_navegacion',
+      label: 'Diseño y navegación',
+      fullName: 'Diseño y navegación',
+      description: 'Inconvenientes con la visualización, los botones y la navegación entre secciones.',
+      icon: 'window'
     },
     {
-      id: 'tecnico_seguridad',
-      label: 'Técnico / WP',
-      fullName: 'Mantenimiento técnico y seguridad',
-      description: 'Actualización controlada de WordPress, plugins y componentes; seguridad de aplicación y corrección de errores.',
-      icon: 'shield',
-      defaultTrack: 'mantenimiento'
+      id: 'busquedas',
+      label: 'Búsquedas',
+      fullName: 'Búsquedas',
+      description: 'Inconvenientes con las búsquedas, los filtros y los resultados al consultar documentos.',
+      icon: 'search'
     },
     {
-      id: 'buscador_documental',
-      label: 'Buscador / Elastic',
-      fullName: 'Buscador y base documental',
-      description: 'Supervisión de Elasticsearch, búsquedas, filtros, indexación y relaciones técnicas documentales.',
-      icon: 'search',
-      defaultTrack: 'mantenimiento'
+      id: 'pagos_accesos',
+      label: 'Pagos y accesos',
+      fullName: 'Pagos y accesos',
+      description: 'Consultas e inconvenientes con pagos, suscripciones y acceso a la plataforma.',
+      icon: 'link'
     },
     {
-      id: 'integraciones_operativas',
-      label: 'Pagos / Accesos',
-      fullName: 'Servicios e integraciones operativas',
-      description: 'Control funcional de accesos, suscripciones, pagos y notificaciones automáticas ya implementadas.',
-      icon: 'link',
-      defaultTrack: 'mantenimiento'
-    },
-    {
-      id: 'monitoreo_rendimiento',
-      label: 'Monitoreo',
-      fullName: 'Monitoreo técnico y seguimiento',
-      description: 'Revisión de rendimiento, CPU, RAM, espacio, PHP, base de datos y registros de errores.',
-      icon: 'activity',
-      defaultTrack: 'mantenimiento'
-    },
-    {
-      id: 'infra_aws_uca',
-      label: 'AWS / Sistemas UCA',
-      fullName: 'Infraestructura AWS / Backups (Sistemas UCA)',
-      description: 'Diagnóstico desde accesos disponibles y derivación o seguimiento con Sistemas UCA.',
-      icon: 'server',
-      defaultTrack: 'sistemas_uca'
+      id: 'informes_actividad',
+      label: 'Informes y actividad',
+      fullName: 'Informes y actividad',
+      description: 'Solicitudes de informes sobre el uso de la plataforma, los ingresos de usuarios y la actividad registrada.',
+      icon: 'bars'
     }
   ],
 
   /**
-   * Apartado 4 — Prioridades y tiempos de primera respuesta
+   * Compatibilidad con registros históricos cargados con identificadores anteriores
    */
+  legacyCategoryMap: {
+    ux_ui_menor: 'diseno_navegacion',
+    buscador_documental: 'busquedas',
+    integraciones_operativas: 'pagos_accesos',
+    monitoreo_rendimiento: 'informes_actividad',
+    tecnico_seguridad: 'gestion_soporte',
+    infra_aws_uca: 'gestion_soporte'
+  },
+
+  /**
+   * Equipos responsables disponibles (incluye responsabilidad compartida)
+   */
+  assigneePresets: [
+    'Sin asignar',
+    'Equipo Técnico Karín',
+    'Sistemas UCA',
+    'Karín y Sistemas UCA'
+  ],
+
   priorities: [
     {
       id: 'critica',
@@ -145,14 +144,11 @@ window.UCA_TICKETERA_CONFIG = {
       id: 'baja',
       label: 'Baja',
       sla: '2 días hábiles',
-      example: 'Ajustes UX/UI',
+      example: 'Ajustes de diseño o navegación',
       badgeClass: 'prio-baja'
     }
   ],
 
-  /**
-   * Apartado 5 — Criterios acumulativos para Ajuste Menor (incluido) vs. Ajuste Mayor (presupuesto aparte)
-   */
   scopeCriteria: [
     {
       id: 'existingComponentOnly',
@@ -176,9 +172,6 @@ window.UCA_TICKETERA_CONFIG = {
     }
   ],
 
-  /**
-   * Estados operativos del ticket
-   */
   statuses: [
     { id: 'Nuevo', badgeClass: 'status-nuevo' },
     { id: 'En diagnóstico', badgeClass: 'status-diagnostico' },
@@ -191,12 +184,8 @@ window.UCA_TICKETERA_CONFIG = {
     { id: 'Resuelto', badgeClass: 'status-resuelto' }
   ],
 
-  /**
-   * Datos semilla iniciales (solo para vista previa local cuando no hay registros en localStorage).
-   * El otro asistente puede vaciarlos o reemplazarlos por datos reales al integrar con MySQL.
-   */
   seedCarryoverByMonth: {
-    '2026-11': 6
+    '2026-11': 15
   },
 
   seedTickets: [
@@ -204,15 +193,12 @@ window.UCA_TICKETERA_CONFIG = {
       id: 'ED-001',
       title: 'Documentos de jurisprudencia recientes no aparecen en filtro por tribunal',
       requestKind: 'mantenimiento',
-      category: 'buscador_documental',
+      category: 'busquedas',
       priority: 'alta',
       status: 'En ejecución',
       requesterName: 'Equipo Editorial El Derecho',
       requesterEmail: 'redaccion@elderecho.uca.edu.ar',
-      requesterArea: 'Contenidos / Base Documental',
-      affectedUrl: 'https://elderecho.com.ar/buscador',
-      evidenceUrl: '',
-      description: 'Al filtrar fallos cargados en las últimas 48 h por cámara comercial, Elasticsearch devuelve resultados incompletos o duplicados en la segunda página.',
+      description: 'Al filtrar los fallos cargados en las últimas 48 horas por cámara comercial, algunos documentos no aparecen en los resultados del buscador.',
       linkedGroup: '',
       involvesAwsOrBackups: false,
       scopeCriteria: {
@@ -229,20 +215,19 @@ window.UCA_TICKETERA_CONFIG = {
       createdAt: '2026-11-04T09:30',
       firstResponseAt: '2026-11-04T11:15',
       billingMonth: '2026-11',
-      technicalNotes: 'Se detectó desfasaje en el índice incremental de Elasticsearch. Reindexación controlada en pruebas.'
+      technicalNotes: 'Se detectó desfasaje en la indexación incremental. Reindexación controlada en pruebas.',
+      attachments: [],
+      workLogs: []
     },
     {
       id: 'ED-002',
       title: 'Ajuste de jerarquía visual y textos en mensajes de renovación de suscripción',
       requestKind: 'mejora',
-      category: 'ux_ui_menor',
+      category: 'diseno_navegacion',
       priority: 'baja',
       status: 'Resuelto',
       requesterName: 'Coordinación Comercial',
       requesterEmail: 'suscripciones@elderecho.uca.edu.ar',
-      requesterArea: 'Suscripciones',
-      affectedUrl: 'https://elderecho.com.ar/mi-cuenta/suscripcion',
-      evidenceUrl: '',
       description: 'Actualizar el texto informativo de vencimiento y ajustar el espaciado y contraste del botón de confirmación en la pantalla actual de cuenta.',
       linkedGroup: '',
       involvesAwsOrBackups: false,
@@ -256,25 +241,24 @@ window.UCA_TICKETERA_CONFIG = {
       hoursLogged: 2.0,
       billingMode: 'bolsa',
       separateQuoteRef: '',
-      assignee: 'Diseño UX/UI Karín',
+      assignee: 'Equipo Técnico Karín',
       createdAt: '2026-11-06T14:10',
       firstResponseAt: '2026-11-07T10:00',
       billingMonth: '2026-11',
-      technicalNotes: 'Cambios aplicados sobre el componente existente y validados en desktop y móvil.'
+      technicalNotes: 'Cambios aplicados sobre el componente existente y validados en desktop y móvil.',
+      attachments: [],
+      workLogs: []
     },
     {
       id: 'ED-003',
       title: 'Pico de consumo de CPU en horarios de mayor consulta y revisión de snapshot',
       requestKind: 'mantenimiento',
-      category: 'infra_aws_uca',
+      category: 'gestion_soporte',
       priority: 'normal',
       status: 'Derivado a Sistemas UCA',
       requesterName: 'Mesa Operativa El Derecho',
       requesterEmail: 'operaciones@elderecho.uca.edu.ar',
-      requesterArea: 'Operaciones',
-      affectedUrl: 'https://elderecho.com.ar',
-      evidenceUrl: '',
-      description: 'Se observaron demoras intermitentes entre las 11:00 y 12:30. Se requiere ampliar recursos de instancia AWS y confirmar ventana de snapshots con Sistemas UCA.',
+      description: 'Se observaron demoras intermitentes entre las 11:00 y 12:30. Se requiere revisar recursos del entorno y confirmar ventana de snapshots con Sistemas UCA.',
       linkedGroup: '',
       involvesAwsOrBackups: true,
       scopeCriteria: {
@@ -287,24 +271,23 @@ window.UCA_TICKETERA_CONFIG = {
       hoursLogged: 1.5,
       billingMode: 'bolsa',
       separateQuoteRef: '',
-      assignee: 'Infra / Seguimiento Karín',
+      assignee: 'Karín y Sistemas UCA',
       createdAt: '2026-11-10T11:45',
       firstResponseAt: '2026-11-10T15:20',
       billingMonth: '2026-11',
-      technicalNotes: 'Diagnóstico desde logs PHP y consultas lentas enviado a Sistemas UCA. A la espera de intervención en instancia AWS.'
+      technicalNotes: 'Diagnóstico desde logs enviado a Sistemas UCA. En seguimiento conjunto.',
+      attachments: [],
+      workLogs: []
     },
     {
       id: 'ED-004',
       title: 'Nuevo módulo de alertas temáticas personalizadas por correo con integración CRM',
       requestKind: 'mejora',
-      category: 'integraciones_operativas',
+      category: 'pagos_accesos',
       priority: 'baja',
       status: 'Presupuesto aparte',
       requesterName: 'Dirección El Derecho',
       requesterEmail: 'direccion@elderecho.uca.edu.ar',
-      requesterArea: 'Dirección',
-      affectedUrl: 'https://elderecho.com.ar/alertas',
-      evidenceUrl: '',
       description: 'Crear una nueva sección donde cada suscriptor configure materias jurídicas, frecuencia de envío y sincronización automática con herramienta externa de email marketing.',
       linkedGroup: 'Fase Alertas 2026',
       involvesAwsOrBackups: false,
@@ -317,12 +300,14 @@ window.UCA_TICKETERA_CONFIG = {
       estimatedHours: 24.0,
       hoursLogged: 1.5,
       billingMode: 'presupuesto_aparte',
-      separateQuoteRef: 'PROP-ED-2026-01 (En análisis)',
-      assignee: 'Líder Técnico Karín',
+      separateQuoteRef: 'PROP-ED-2026-01 En análisis',
+      assignee: 'Equipo Técnico Karín',
       createdAt: '2026-11-12T16:00',
       firstResponseAt: '2026-11-13T10:30',
       billingMonth: '2026-11',
-      technicalNotes: 'Clasificado como Ajuste Mayor / Nuevo desarrollo. Las 1.5 h corresponden al análisis preliminar; desarrollo cotizado por separado.'
+      technicalNotes: 'Clasificado como Ajuste Mayor / Nuevo desarrollo. Las 1,5 h corresponden al análisis preliminar; desarrollo cotizado por separado.',
+      attachments: [],
+      workLogs: []
     }
   ]
 };

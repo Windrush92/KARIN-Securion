@@ -4,7 +4,13 @@ require __DIR__ . '/db.php';
 
 $method = $_SERVER['REQUEST_METHOD'];
 if ($method === 'GET') {
-    reply(200, ['success' => true, 'user' => currentUser(), 'csrf' => $_SESSION['csrf']]);
+    $user = currentUser();
+    reply(200, [
+        'success' => true,
+        'user' => $user,
+        'canViewReport' => canAccessReport($user['role']),
+        'csrf' => $_SESSION['csrf']
+    ]);
 }
 if ($method === 'DELETE') {
     currentUser();
@@ -43,4 +49,9 @@ unset($user['password']);
 session_regenerate_id(true);
 $_SESSION = ['id' => $user['id'], 'csrf' => bin2hex(random_bytes(32)), 'start' => $now, 'last' => $now];
 $pdo->prepare('DELETE FROM ticketera_intentos WHERE origen = ? OR ventana < ?')->execute([$origin, $now - 900]);
-reply(200, ['success' => true, 'user' => $user, 'csrf' => $_SESSION['csrf']]);
+reply(200, [
+    'success' => true,
+    'user' => $user,
+    'canViewReport' => canAccessReport($user['role']),
+    'csrf' => $_SESSION['csrf']
+]);

@@ -1,34 +1,23 @@
-# Referencia de mantenimiento de la ticketera de El Derecho
+# Referencia técnica — Ticketera El Derecho (UCA)
 
-La guía de instalación, las variables de entorno, los permisos y las reglas de imputación están en [README.md](README.md).
+La guía de instalación, variables de entorno (`ED_DB_*`, `ED_MES_INICIO`, `ED_ALLOW_CLIENT_REPORT`), permisos y reglas FIFO están en [README.md](README.md).
 
 ## Archivos y responsabilidades
 
-- `index.html` y `css/styles.css` contienen el formulario, el panel, el detalle de tickets y el reporte imprimible.
-- `js/config.js` contiene el catálogo, la presentación de las reglas y los ejemplos de la vista local.
-- `js/app.js` gestiona los formularios, la sesión en memoria, el libro mensual, las intervenciones fechadas, el evaluador de alcance y la exportación.
-- `api/db.php` configura la sesión y la conexión. `api/login.php` abre, consulta y cierra la sesión. `api/tickets.php` autoriza cada operación, valida campos y alcance, controla versiones y registra el historial en la misma transacción que el cambio.
-- `database.sql` conserva las tablas originales y añade control de intentos, serialización de escrituras, intervenciones e historial. `.htaccess` reúne reglas del servidor web.
-- Al modificar una regla contractual, revisar sus validaciones en PHP y su presentación en JavaScript. Probar también los registros anteriores y las intervenciones que cruzan meses.
+- `index.html` y `css/styles.css`: formulario único *Generar ticket*, *Portal de tickets*, tarjetas limpias de solo lectura, *Reporte mensual de horas*, drawer de detalle/gestión, visor de imágenes adjuntas y modal exclusivo de ajuste de saldo.
+- `js/config.js`: catálogo de las 5 áreas de atención (*Gestión y soporte*, *Diseño y navegación*, *Búsquedas*, *Pagos y accesos*, *Informes y actividad*), mapa de compatibilidad `legacyCategoryMap`, equipos responsables (`Equipo Técnico Karín`, `Sistemas UCA`, `Karín y Sistemas UCA`), límites de adjuntos y datos de ejemplo locales.
+- `js/app.js`: sesión por cuenta, carga de capturas (archivo, arrastrar/soltar y `Ctrl + V`), toggletips accesibles (`interestfor` + `popover="hint"` + fallback local sin CDN), motor FIFO compartido entre portal/tarjetas/reporte, CSV neutralizado contra inyección de fórmulas y gestión de intervenciones fechadas.
+- `api/db.php`: sesión estricta, conexión PDO y función `canAccessReport()`.
+- `api/login.php`: inicio, verificación y cierre de sesión con protección contra fuerza bruta y CSRF.
+- `api/tickets.php`: alta vinculada estrictamente al usuario autenticado (`solicitante_id`, `solicitante_nombre`, `solicitante_email`), lectura filtrada por rol, edición/eliminación exclusiva para `admin` con concurrencia optimista (`version`) e historial transaccional.
+- `api/adjuntos.php`: carga autenticada de imágenes PNG/JPG/WebP/GIF (hasta 5 MB, máx. 5 por ticket, verificadas con `finfo` y `getimagesizefromstring`) y entrega segura con `Content-Security-Policy: default-src 'none'; sandbox` y `X-Content-Type-Options: nosniff`.
+- `api/bolsa.php`: endpoint exclusivo para `admin` para registrar ajustes de saldo inicial o correcciones (`0..30 h`) con motivo obligatorio y registro de auditoría en `bolsa_mensual_ajustes` y `ticketera_historial`.
+- `database.sql` y `.htaccess`: esquema completo e importable sobre bases previas, y cabeceras CSP (`script-src 'self'`, `img-src 'self' blob: data: https://assets.zyrosite.com`).
 
 ## Identidad gráfica
 
-Esta base replica la identidad validada con el cliente en el portal de SECURION / **Karín Diseño**:
-
-* **Tipografías:** `Bebas Neue` (títulos, botones, tabs, KPIs, etiquetas) + `Open Sans` (cuerpo, formularios, tablas).
-* **Paleta principal:** Amarillo Karín `#FCBB15` (tinta `#D99B00` en modo claro para contraste sobre blanco), grafito `#0B0B0E` / `#141419` (oscuro), hueso `#F6F6FA` / `#FFFFFF` (claro).
-* **Modo por defecto:** **Modo claro**, con botón discreto en el header para alternar a oscuro (`<meta name="color-scheme">` sincronizado con CSS y `localStorage`).
-* **Geometría editorial:** Esquinas rectas (`border-radius: 0`) en tarjetas, botones, badges, aviso amarillo y modales.
-* **Navegación y filtros sin pastillas:** Texto en `Bebas Neue` con línea inferior amarilla (`border-bottom: 2px solid var(--karin-yellow)`) al estar activo.
-* **Botón de eliminar para administración:** Cruz discreta, cuadrada (`26px × 26px`) y amarilla arriba a la derecha de cada tarjeta, con confirmación en `<dialog>`.
-* **Cero emojis:** No usar emojis en ningún texto, botón, validación ni estado. Solo SVG lineales minimalistas.
-* **Copy limpio en formularios:** No usar textos de ejemplo (`placeholder="Ej. ..."`) en los campos de entrada ni mostrar referencias internas al documento comercial (*Apartado 1/2/4/5/7*) en la interfaz visible.
-* **Logo de la UCA sutil:** Ubicado con baja prominencia en monocromo (`assets/logo-uca.png`, con inversión automática en modo oscuro) en el header junto a *Ticketera El Derecho*, en el pie del login, en el encabezado del reporte imprimible y en el footer.
-
----
-
-
-## Decisiones operativas pendientes
-
-Confirmar el inicio, el horario hábil y los referentes de cada perfil. La entrega de facturas por Everest es un circuito operativo del cliente. Una integración nueva o el envío automático de notificaciones desde la ticketera requiere su propio alcance y un canal autorizado por la UCA.
-
+- **Tipografías:** `Bebas Neue` (títulos, navegación, KPIs, botones principales) y `Open Sans` (formularios, tarjetas de detalle, tablas y botones secundarios).
+- **Paleta:** Amarillo Karín `#FCBB15` (tinta `#D99B00` en modo claro), grafito `#0B0B0E` / `#141419` en oscuro y hueso `#F6F6FA` / `#FFFFFF` en claro.
+- **Modo por defecto:** Claro, con alternancia sincronizada a oscuro (`assets/karin-oscuro.png` y sello UCA invertido automáticamente).
+- **Cero emojis:** Solo SVG lineales minimalistas en toda la interfaz.
+- **Sello UCA sutil:** Presente en el header general, pie de login y footer institucional (sin duplicarlo dentro de la hoja del reporte).

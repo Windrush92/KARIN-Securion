@@ -41,11 +41,21 @@ function db(): PDO {
     $host = getenv('ED_DB_HOST') ?: 'localhost';
     $port = (int)(getenv('ED_DB_PORT') ?: 3306);
     $pdo = new PDO("mysql:host=$host;port=$port;dbname=$name;charset=utf8mb4", $user, $pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false
     ]);
     $pdo->exec("SET time_zone = '-03:00'");
     return $pdo;
+}
+
+function canAccessReport(string $role): bool {
+    if ($role === 'admin') return true;
+    if ($role === 'el_derecho') {
+        $flag = strtolower(trim((string)(getenv('ED_ALLOW_CLIENT_REPORT') ?: '0')));
+        return in_array($flag, ['1', 'true', 'yes', 'si'], true);
+    }
+    return false;
 }
 
 function currentUser(): array {
@@ -56,7 +66,7 @@ function currentUser(): array {
     $stmt = db()->prepare('SELECT id, nombre AS name, email, rol AS role FROM usuarios WHERE id = ?');
     $stmt->execute([$_SESSION['id']]);
     $user = $stmt->fetch();
-    if (!$user || !in_array($user['role'], ['admin','el_derecho','sistemas_uca'], true)) {
+    if (!$user || !in_array($user['role'], ['admin', 'el_derecho', 'sistemas_uca'], true)) {
         $_SESSION = [];
         fail(401, 'La cuenta ya no tiene acceso.');
     }

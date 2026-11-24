@@ -7,7 +7,7 @@
   <script src="js/config.js"></script>
 
   <title>KARÍN | Ticketera de Mantenimiento — El Derecho (UCA)</title>
-  <meta name="description" content="Ticketera de soporte, mantenimiento técnico y control mensual de horas para El Derecho — Universidad Católica Argentina, operada por Karín.">
+  <meta name="description" content="Portal de soporte, mantenimiento técnico y control mensual de horas para El Derecho — Universidad Católica Argentina, operado por Karín.">
   <link rel="icon" type="image/png" href="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=32,h=32,fit=crop,f=png/mv0lGExe8ySg27l9/favicon-karin-AR0VG83LXwT9lnw8.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,7 +71,7 @@
             <span>Generar Ticket</span>
           </button>
           <button type="button" class="nav-btn" id="tabDashboard" data-view="dashboard">
-            <span>Panel de Tickets</span>
+            <span>Portal de Tickets</span>
             <span class="badge-count" id="navTicketCount">0</span>
           </button>
           <button type="button" class="nav-btn" id="tabReport" data-view="report">
@@ -91,10 +91,9 @@
   </header>
 
   <main>
-    <p id="demoNotice" class="demo-notice" hidden>Vista previa local · Usá datos de ejemplo. Los tickets se guardan en este navegador.</p>
 
     <!-- ==================================================================== -->
-    <!-- VISTA 0: LOGIN DESACOPLADO (ACTIVO CUANDO config.auth.requireAuth)   -->
+    <!-- VISTA 0: LOGIN PERSONAL POR CUENTA HABILITADA                        -->
     <!-- ==================================================================== -->
     <section id="viewLogin" class="view-section" aria-labelledby="loginTitle">
       <div class="login-container">
@@ -105,7 +104,7 @@
             alt="Karín"
           >
           <h1 id="loginTitle" class="login-title">INICIAR <span>SESIÓN</span></h1>
-          <p class="login-subtitle">Acceso a la ticketera de mantenimiento de El Derecho</p>
+          <p class="login-subtitle">Acceso con cuenta habilitada a la ticketera de El Derecho</p>
         </div>
 
         <div class="login-error" id="loginErrorBox" role="alert"></div>
@@ -113,7 +112,7 @@
         <form id="loginForm" novalidate>
           <div class="form-group" style="margin-bottom: 1.15rem;">
             <label for="loginEmail">Correo electrónico <span class="req">*</span></label>
-            <span id="loginEmailHint" class="field-hint">Ingresá el correo habilitado para el portal.</span>
+            <span id="loginEmailHint" class="field-hint">Ingresá el correo de tu cuenta habilitada para el portal.</span>
             <input
               type="email"
               id="loginEmail"
@@ -152,211 +151,110 @@
     </section>
 
     <!-- ==================================================================== -->
-    <!-- VISTA 1: NUEVO TICKET (WIZARD 3 PASOS SEGÚN PROPUESTA UCA)           -->
+    <!-- VISTA 1: GENERAR TICKET (FORMULARIO EN UNA SOLA PANTALLA)            -->
     <!-- ==================================================================== -->
     <section id="viewNewTicket" class="view-section active" aria-labelledby="wizardMainTitle">
       <div class="wizard-container">
         <div class="wizard-header">
           <div>
-            <h1 id="wizardMainTitle">GENERAR TICKET <span>- SOPORTE Y MANTENIMIENTO</span></h1>
-            <p>Registrá incidencias, consultas técnicas o solicitudes de ajuste sobre la plataforma El Derecho.</p>
+            <h1 id="wizardMainTitle">GENERAR TICKET - <span>SOPORTE Y MANTENIMIENTO</span></h1>
+            <p>Registrá incidencias, consultas técnicas o solicitudes de ajustes sobre la plataforma El Derecho.</p>
           </div>
         </div>
 
-        <nav class="steps-indicator" id="wizardStepsNav" aria-label="Pasos del registro de ticket">
-          <button type="button" class="step-tab current" id="stepTab1" data-step="1">
-            <span class="step-num">01.</span>
-            <span>SOLICITUD Y SERVICIO</span>
-          </button>
-          <button type="button" class="step-tab" id="stepTab2" data-step="2">
-            <span class="step-num">02.</span>
-            <span>PRIORIDAD Y DETALLE</span>
-          </button>
-          <button type="button" class="step-tab" id="stepTab3" data-step="3">
-            <span class="step-num">03.</span>
-            <span>REVISIÓN Y ENVÍO</span>
-          </button>
-        </nav>
-
         <form id="ticketForm" novalidate>
-          <!-- PASO 1 -->
-          <div class="form-step active" id="formStep1">
-            <div class="step-heading">
-              <h2>01 · DATOS DEL SOLICITANTE Y CATEGORÍA</h2>
-              <p>Identificá quién realiza el pedido y el área de servicio correspondiente al abono.</p>
+          <div class="step-heading">
+            <h2>DATOS DE LA SOLICITUD</h2>
+          </div>
+
+          <div class="single-form-stack">
+            <div class="form-group">
+              <label for="ticketTitle">Asunto del ticket <span class="req">*</span></label>
+              <span id="ticketTitleHint" class="field-hint">Indicá brevemente el motivo de la solicitud.</span>
+              <input
+                type="text"
+                id="ticketTitle"
+                name="ticketTitle"
+                maxlength="255"
+                required
+                aria-describedby="ticketTitleHint"
+                data-error="ticketTitleError"
+              >
+              <div id="ticketTitleError" class="error-msg">Error: Escribí un asunto claro para identificar el ticket.</div>
             </div>
 
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="requesterName">Nombre y apellido <span class="req">*</span></label>
-                <span id="requesterNameHint" class="field-hint">Persona de contacto en El Derecho / UCA.</span>
-                <input
-                  type="text"
-                  id="requesterName" maxlength="150"
-                  name="requesterName"
-                  required
-                  autocomplete="name"
-                  aria-describedby="requesterNameHint"
-                  data-error="requesterNameError"
-                >
-                <div id="requesterNameError" class="error-msg">Error: Indicá el nombre del solicitante.</div>
-              </div>
-
-              <div class="form-group">
-                <label for="requesterEmail">Correo electrónico <span class="req">*</span></label>
-                <span id="requesterEmailHint" class="field-hint">Correo de contacto para el seguimiento del pedido.</span>
-                <input
-                  type="email"
-                  id="requesterEmail" maxlength="160"
-                  name="requesterEmail"
-                  required
-                  autocomplete="email"
-                  aria-describedby="requesterEmailHint"
-                  data-error="requesterEmailError"
-                >
-                <div id="requesterEmailError" class="error-msg">Error: Ingresá un correo en formato válido.</div>
-              </div>
-
-              <div class="form-group">
-                <label for="requesterArea">Área / Equipo en El Derecho</label>
-                <span id="requesterAreaHint" class="field-hint">Opcional: área o equipo desde el que se realiza la solicitud.</span>
-                <input
-                  type="text"
-                  id="requesterArea" maxlength="120"
-                  name="requesterArea"
-                  aria-describedby="requesterAreaHint"
-                >
-              </div>
-
-              <div class="form-group">
-                <label for="requestKind">Naturaleza de la solicitud <span class="req">*</span></label>
-                <span id="requestKindHint" class="field-hint">Los criterios Menor vs. Mayor aplican a cambios y mejoras solicitados.</span>
-                <select id="requestKind" name="requestKind" required aria-describedby="requestKindHint">
-                  <option value="mantenimiento">Incidente / Mantenimiento / Consulta operativa</option>
-                  <option value="mejora">Cambio o mejora solicitada (UX/UI o funcionalidad)</option>
-                </select>
-              </div>
-
-              <div class="form-group col-full">
-                <label for="ticketTitle">Asunto del ticket <span class="req">*</span></label>
-                <span id="ticketTitleHint" class="field-hint">Título breve y descriptivo del problema o ajuste requerido.</span>
-                <input
-                  type="text"
-                  id="ticketTitle" maxlength="255"
-                  name="ticketTitle"
-                  required
-                  aria-describedby="ticketTitleHint"
-                  data-error="ticketTitleError"
-                >
-                <div id="ticketTitleError" class="error-msg">Error: Escribí un asunto claro para identificar el ticket.</div>
-              </div>
-
-              <div class="form-group col-full">
-                <span class="field-label">Servicio / Área técnica <span class="req">*</span></span>
-                <div class="card-selector-grid" id="categorySelectorGrid" role="radiogroup" aria-label="Categoría de servicio"></div>
-                <div class="category-helper-note" id="categoryHelperNote"></div>
-              </div>
-
-              <div class="form-group col-full">
-                <label for="linkedGroup">Mejora o iniciativa vinculada (opcional)</label>
-                <span id="linkedGroupHint" class="field-hint">Si este pedido forma parte de una misma mejora dividida en varios tickets, indicá el nombre para evaluarlos en conjunto.</span>
-                <input
-                  type="text"
-                  id="linkedGroup" maxlength="160"
-                  name="linkedGroup"
-                  aria-describedby="linkedGroupHint"
-                >
-              </div>
+            <div class="form-group">
+              <span class="field-label" id="categoryGroupLabel">Área de atención <span class="req">*</span></span>
+              <span id="categoryHint" class="field-hint">Seleccioná el área de la plataforma relacionada con tu solicitud.</span>
+              <div
+                class="area-card-grid"
+                id="categorySelectorGrid"
+                role="radiogroup"
+                aria-labelledby="categoryGroupLabel"
+                aria-describedby="categoryHint"
+              ></div>
+              <div id="categoryError" class="error-msg">Error: Seleccioná un área de atención.</div>
             </div>
 
-            <div class="wizard-actions">
-              <span></span>
-              <button type="button" class="btn btn-primary" data-next="2">Siguiente: Prioridad y Detalle</button>
+            <div class="form-group">
+              <label for="ticketDescription">Descripción de la solicitud <span class="req">*</span></label>
+              <span id="ticketDescriptionHint" class="field-hint">Describí qué sucede, en qué parte de la plataforma y qué necesitás que revisemos.</span>
+              <textarea
+                id="ticketDescription"
+                name="ticketDescription"
+                maxlength="8000"
+                required
+                placeholder="Escribí aquí los detalles de tu solicitud."
+                aria-describedby="ticketDescriptionHint"
+                data-error="ticketDescriptionError"
+              ></textarea>
+              <div id="ticketDescriptionError" class="error-msg">Error: Ingresá los detalles de tu solicitud para que podamos revisarla.</div>
+            </div>
+
+            <div class="form-group">
+              <label for="ticketImagesInput">Capturas de pantalla o imágenes (opcional)</label>
+              <span id="ticketImagesHint" class="field-hint">Adjuntá una imagen que ayude a entender la solicitud.</span>
+
+              <div
+                class="dropzone-box"
+                id="imageDropzone"
+                tabindex="0"
+                role="region"
+                aria-label="Zona para adjuntar capturas de pantalla o imágenes"
+                aria-describedby="ticketImagesHint"
+              >
+                <input
+                  type="file"
+                  id="ticketImagesInput"
+                  class="visually-hidden"
+                  accept="image/png,image/jpeg,image/webp,image/gif"
+                  multiple
+                >
+                <svg class="dropzone-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="9.5" r="1.5"></circle>
+                  <path d="m21 15-5-5L5 20"></path>
+                </svg>
+                <button type="button" class="btn-attach-image" id="btnTriggerAttach">
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                  </svg>
+                  <span>Adjuntar imagen</span>
+                </button>
+                <p class="dropzone-help">
+                  Seleccioná un archivo de tu computadora o arrastralo hasta aquí.<br>
+                  También podés pegar una captura con Ctrl + V.
+                </p>
+              </div>
+
+              <div class="attachment-preview-grid" id="attachmentPreviewList" aria-live="polite"></div>
             </div>
           </div>
 
-          <!-- PASO 2 -->
-          <div class="form-step" id="formStep2">
-            <div class="step-heading">
-              <h2>02 · PRIORIDAD, CONTEXTO TÉCNICO Y EVIDENCIA</h2>
-              <p>Seleccioná la prioridad según el impacto operativo y brindá la información necesaria para el diagnóstico.</p>
-            </div>
-
-            <div class="form-grid">
-              <div class="form-group col-full">
-                <span class="field-label">Prioridad y compromiso de primera respuesta <span class="req">*</span></span>
-                <div class="priority-selector-grid" id="prioritySelectorGrid" role="radiogroup" aria-label="Prioridad del ticket"></div>
-              </div>
-
-              <div class="form-group col-full">
-                <label for="ticketDescription">Descripción detallada <span class="req">*</span></label>
-                <span id="ticketDescriptionHint" class="field-hint">Indicá el resultado esperado, qué ocurrió y a quién afecta. Para accesos o PDF distinguí suscriptor individual e institución. Para cobros identificá la etapa (pago, acceso o factura). Usá referencias sin contraseñas ni datos de tarjeta.</span>
-                <textarea
-                  id="ticketDescription" maxlength="8000"
-                  name="ticketDescription"
-                  required
-                  aria-describedby="ticketDescriptionHint"
-                  data-error="ticketDescriptionError"
-                ></textarea>
-                <div id="ticketDescriptionError" class="error-msg">Error: Ingresá una descripción detallada para poder diagnosticar el pedido.</div>
-              </div>
-
-              <div class="form-group">
-                <label for="affectedUrl">URL o sección afectada en El Derecho</label>
-                <span id="affectedUrlHint" class="field-hint">Enlace directo a la pantalla, buscador o formulario donde ocurre.</span>
-                <input
-                  type="url"
-                  id="affectedUrl" maxlength="2048"
-                  name="affectedUrl"
-                  aria-describedby="affectedUrlHint"
-                  data-error="affectedUrlError"
-                >
-                <div id="affectedUrlError" class="error-msg">Error: Ingresá una URL válida comenzando con https://</div>
-              </div>
-
-              <div class="form-group">
-                <label for="evidenceUrl">Enlace a capturas / documento de respaldo</label>
-                <span id="evidenceUrlHint" class="field-hint">Enlace HTTPS a una captura o documento con acceso restringido al equipo que atiende el caso.</span>
-                <input
-                  type="url"
-                  id="evidenceUrl" maxlength="2048"
-                  name="evidenceUrl"
-                  aria-describedby="evidenceUrlHint"
-                  data-error="evidenceUrlError"
-                >
-                <div id="evidenceUrlError" class="error-msg">Error: Ingresá un enlace válido comenzando con https://</div>
-              </div>
-
-              <div class="form-group col-full">
-                <label class="inline-check-card">
-                  <input type="checkbox" id="involvesAwsOrBackups" name="involvesAwsOrBackups">
-                  <span>
-                    <strong>Posible dependencia de infraestructura AWS o Backups (Sistemas UCA):</strong>
-                    Marcá esta casilla si el pedido podría requerir permisos de servidor, ampliación de recursos AWS o restauración de backups/snapshots.
-                  </span>
-                </label>
-              </div>
-            </div>
-
-            <div class="wizard-actions">
-              <button type="button" class="btn btn-secondary" data-prev="1">Volver</button>
-              <button type="button" class="btn btn-primary" data-next="3">Siguiente: Revisión</button>
-            </div>
-          </div>
-
-          <!-- PASO 3 -->
-          <div class="form-step" id="formStep3">
-            <div class="step-heading">
-              <h2>03 · REVISIÓN PREVIA AL REGISTRO</h2>
-              <p>Verificá los datos antes de crear el ticket. El equipo evaluará el alcance y las horas estimadas antes de ejecutar mejoras.</p>
-            </div>
-
-            <div class="summary-box" id="wizardSummaryBox"></div>
-
-            <div class="wizard-actions">
-              <button type="button" class="btn btn-secondary" data-prev="2">Volver</button>
-              <button type="submit" class="btn btn-primary">REGISTRAR TICKET</button>
-            </div>
+          <div class="wizard-actions single-form-actions">
+            <button type="submit" class="btn btn-primary btn-submit-ticket" id="btnSubmitTicket">ENVIAR TICKET</button>
           </div>
         </form>
 
@@ -365,57 +263,70 @@
           <div class="success-icon-wrap" aria-hidden="true">
             <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </div>
-          <h2>TICKET REGISTRADO</h2>
+          <h2>TICKET ENVIADO</h2>
           <div class="ticket-id-badge" id="successTicketId">#ED-000</div>
           <div class="summary-box" id="successDetailsBox" style="max-width: 520px; margin: 0 auto 1.5rem; text-align: left;"></div>
           <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-            <button type="button" class="btn btn-secondary" id="btnNewAnotherTicket">Cargar Otro Ticket</button>
-            <button type="button" class="btn btn-primary" id="btnGoToDashboard">Ver en Panel de Tickets</button>
+            <button type="button" class="btn btn-secondary" id="btnNewAnotherTicket">Generar Otro Ticket</button>
+            <button type="button" class="btn btn-primary" id="btnGoToDashboard">Ver en Portal de Tickets</button>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ==================================================================== -->
-    <!-- VISTA 2: PANEL DE TICKETS & CONSUMO DE BOLSA DE HORAS                -->
+    <!-- VISTA 2: PORTAL DE TICKETS & BOLSA DE HORAS COMPARTIDA               -->
     <!-- ==================================================================== -->
     <section id="viewDashboard" class="view-section" aria-labelledby="dashboardTitle">
-      <div class="dashboard-header">
-        <div>
-          <h1 id="dashboardTitle">PANEL DE TICKETS <span>EL DERECHO</span></h1>
-          <p>Seguimiento operativo, validación de alcance (menor vs. mayor) y control de la bolsa mensual de 30 horas.</p>
-        </div>
+      <div class="dashboard-header-stack">
+        <h1 id="dashboardTitle">PORTAL DE TICKETS <span>EL DERECHO</span></h1>
         <div class="month-picker-inline">
           <label for="dashboardMonthSelect">Mes contable:</label>
-          <input type="month" aria-label="Mes del panel" id="dashboardMonthSelect">
+          <input type="month" aria-label="Mes contable" id="dashboardMonthSelect">
         </div>
       </div>
 
       <!-- Barra FIFO de Bolsa Mensual de Horas -->
       <p class="no-contract-notice" id="dashboardContractNotice" hidden></p>
       <div class="hours-pool-panel" id="hoursPoolPanel">
-        <div class="hours-pool-top">
-          <div>
-            <div class="hours-pool-title">BOLSA DE HORAS DEL MES · <span id="poolMonthLabel">NOVIEMBRE 2026</span></div>
-            <div class="hours-pool-subtitle">Prioridad de consumo: primero se utilizan las horas trasladadas del mes anterior (vencen a fin de mes, máx. 30 h) y luego la bolsa de 30 h del mes.</div>
-          </div>
-          <div class="hours-pool-numbers">
-            <div class="pool-stat">
-              <span class="pool-stat-val" id="poolCarryoverDisplay">0 h</span>
-              <span class="pool-stat-label">Trasladadas disp.</span>
-            </div>
-            <div class="pool-stat">
-              <span class="pool-stat-val" id="poolConsumedDisplay">0 h</span>
-              <span class="pool-stat-label">Consumidas (bolsa)</span>
-            </div>
-            <div class="pool-stat">
-              <span class="pool-stat-val accent" id="poolRemainingDisplay">30 h</span>
-              <span class="pool-stat-label">Saldo disponible</span>
-            </div>
+        <div class="hours-pool-title-row">
+          <div class="hours-pool-title">BOLSA DE HORAS DEL MES · <span id="poolMonthLabel">NOVIEMBRE 2026</span></div>
+          <button
+            type="button"
+            class="info-trigger-btn"
+            id="poolInfoBtn"
+            interestfor="poolInfoTip"
+            popovertarget="poolInfoTip"
+            popovertargetaction="show"
+            aria-label="Información sobre prioridad de uso de horas"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="11"></line>
+              <circle cx="12" cy="7.5" r="0.8" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </button>
+          <div id="poolInfoTip" class="info-toggletip" popover="hint">
+            <div class="info-toggletip-inner">Prioridad de consumo: primero se utilizan las horas trasladadas del mes anterior (vencen a fin de mes, máx. 30 h) y luego la bolsa de 30 h del mes.</div>
           </div>
         </div>
 
-        <div class="hours-progress-track" role="img" id="hoursProgressTrack" aria-label="Progreso de consumo mensual de horas">
+        <div class="hours-pool-numbers">
+          <div class="pool-stat">
+            <span class="pool-stat-val" id="poolCarryoverDisplay">0 h</span>
+            <span class="pool-stat-label">Trasladadas disp.</span>
+          </div>
+          <div class="pool-stat">
+            <span class="pool-stat-val" id="poolConsumedDisplay">0 h</span>
+            <span class="pool-stat-label">Horas utilizadas (bolsa)</span>
+          </div>
+          <div class="pool-stat">
+            <span class="pool-stat-val accent" id="poolRemainingDisplay">30 h</span>
+            <span class="pool-stat-label">Saldo disponible</span>
+          </div>
+        </div>
+
+        <div class="hours-progress-track" role="img" id="hoursProgressTrack" aria-label="Progreso de horas utilizadas del mes">
           <div class="hours-progress-carry" id="barCarryUsed" style="width: 0%;"></div>
           <div class="hours-progress-current" id="barCurrentUsed" style="width: 0%;"></div>
           <div class="hours-progress-over" id="barOverUsed" style="width: 0%;"></div>
@@ -423,11 +334,11 @@
 
         <div class="hours-pool-legend">
           <div class="legend-items">
-            <span class="legend-item"><span class="legend-swatch carry"></span><span id="legendCarryText">Trasladadas: 0 / 0 h</span></span>
-            <span class="legend-item"><span class="legend-swatch current"></span><span id="legendCurrentText">Mes actual: 0 / 30 h</span></span>
+            <span class="legend-item"><span class="legend-swatch carry"></span><span id="legendCarryText">Trasladadas: 0 h / 0 h</span></span>
+            <span class="legend-item"><span class="legend-swatch current"></span><span id="legendCurrentText">Mes actual: 0 h / 30 h</span></span>
             <span class="legend-item"><span class="legend-swatch remaining"></span><span id="legendNextCarryText">Traslado estimado próximo mes: 30 h</span></span>
           </div>
-          <div id="legendMajorHoursText">Desarrollos mayores / presupuesto aparte: 0 h</div>
+          <div id="legendMajorHoursText">Presupuesto aparte: 0 h · Excedente de bolsa: 0 h</div>
         </div>
       </div>
 
@@ -456,10 +367,9 @@
         <div class="filter-tabs" id="dashboardFilterTabs" role="group" aria-label="Filtrar tickets">
           <button type="button" class="filter-tab active" data-filter="todos" aria-pressed="true">Todos</button>
           <button type="button" class="filter-tab" data-filter="criticos" aria-pressed="false">Críticos / Altos</button>
-          <button type="button" class="filter-tab" data-filter="activos" aria-pressed="false">En Curso</button>
-          <button type="button" class="filter-tab" data-filter="sistemas_uca" aria-pressed="false">Sistemas UCA (AWS)</button>
-          <button type="button" class="filter-tab" data-filter="mayores" aria-pressed="false">Presupuesto Aparte</button>
+          <button type="button" class="filter-tab" data-filter="activos" aria-pressed="false">En curso</button>
           <button type="button" class="filter-tab" data-filter="resueltos" aria-pressed="false">Resueltos</button>
+          <button type="button" class="filter-tab" data-filter="sistemas_uca" aria-pressed="false">Sistemas UCA (AWS)</button>
         </div>
 
         <div class="search-box">
@@ -478,45 +388,69 @@
     </section>
 
     <!-- ==================================================================== -->
-    <!-- VISTA 3: REPORTE MENSUAL DE HORAS (APARTADO 4 DEL PRESUPUESTO)       -->
+    <!-- VISTA 3: REPORTE MENSUAL DE HORAS                                    -->
     <!-- ==================================================================== -->
     <section id="viewReport" class="view-section" aria-labelledby="reportMainTitle">
-      <div class="dashboard-header">
-        <div>
+      <div class="dashboard-header report-page-header">
+        <div class="title-with-info">
           <h1 id="reportMainTitle">REPORTE MENSUAL <span>DE HORAS</span></h1>
-          <p>Consumo y saldo por período según la fecha de cada intervención. Los registros anteriores conservan su mes de imputación y muestran la fecha de alta.</p>
+          <button
+            type="button"
+            class="info-trigger-btn"
+            id="reportInfoBtn"
+            interestfor="reportInfoTip"
+            popovertarget="reportInfoTip"
+            popovertargetaction="show"
+            aria-label="Información sobre cómo se calcula el reporte mensual"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="11"></line>
+              <circle cx="12" cy="7.5" r="0.8" fill="currentColor" stroke="none"></circle>
+            </svg>
+          </button>
+          <div id="reportInfoTip" class="info-toggletip" popover="hint">
+            <div class="info-toggletip-inner">Consumo y saldo por período según la fecha de cada intervención. Los registros anteriores conservan su mes de imputación y muestran la fecha de alta.</div>
+          </div>
         </div>
+
+        <button type="button" class="btn btn-secondary btn-compact admin-only-control" id="btnOpenBalanceAdjust">
+          Ajuste de saldo
+        </button>
       </div>
 
-      <div class="report-toolbar">
-        <div class="report-controls">
-          <div class="report-control-group">
-            <label for="reportMonthSelect">Período del reporte</label>
-            <input type="month" id="reportMonthSelect">
-          </div>
-          <div class="report-control-group">
-            <label for="carryoverInput">Traslado del mes anterior (hasta 30 h)</label>
-            <input type="number" id="carryoverInput" min="0" max="30" step="0.01" value="0">
-          </div>
-        </div>
-
-        <div class="report-actions">
-          <button type="button" class="btn btn-secondary" id="btnExportCsv">Exportar CSV</button>
-          <button type="button" class="btn btn-primary" id="btnPrintReport">Imprimir / Guardar PDF</button>
-        </div>
-      </div>
-
-      <p class="no-contract-notice" hidden></p>
+      <p class="no-contract-notice" id="reportContractNotice" hidden></p>
       <div class="report-sheet" id="reportSheet">
         <div class="report-sheet-header">
           <div class="report-sheet-title">
             <h2>REPORTE DE MANTENIMIENTO · <span id="reportPeriodHeading">NOVIEMBRE 2026</span></h2>
-            <p>El Derecho — Pontificia Universidad Católica Argentina | Abono mensual: hasta 30 h incluidas</p>
+            <p>El Derecho — Pontificia Universidad Católica Argentina | Abono mensual: 30 h incluidas</p>
           </div>
-          <div class="report-brands">
-            <img class="brand-logo" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=375,fit=crop,q=95/mv0lGExe8ySg27l9/mesa-de-trabajo-1-AoP487wzX7uWODk9.png" alt="Karín">
-            <div class="brand-divider" aria-hidden="true"></div>
-            <img class="uca-seal-img" src="assets/logo-uca.png" alt="UCA">
+
+          <div class="report-header-controls">
+            <div class="report-period-control">
+              <label for="reportMonthSelect">Período</label>
+              <input type="month" id="reportMonthSelect" aria-label="Período del reporte">
+            </div>
+            <div class="report-export-actions">
+              <button type="button" class="btn-export btn-export-csv" id="btnExportCsv">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="8" y1="13" x2="16" y2="13"></line>
+                  <line x1="8" y1="17" x2="14" y2="17"></line>
+                </svg>
+                <span>CSV</span>
+              </button>
+              <button type="button" class="btn-export btn-export-pdf" id="btnPrintReport">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="9" y1="15" x2="15" y2="15"></line>
+                </svg>
+                <span>PDF</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -524,16 +458,16 @@
 
         <div tabindex="0" role="region" aria-labelledby="monthly-report-caption" class="table-wrapper">
           <table class="report-table">
-            <caption id="monthly-report-caption">Detalle mensual de tareas y consumo de horas — El Derecho (UCA)</caption>
+            <caption id="monthly-report-caption">Detalle mensual de tareas y horas utilizadas — El Derecho (UCA)</caption>
             <thead>
               <tr>
                 <th scope="col">Ticket / Tarea</th>
                 <th scope="col">Fecha</th>
-                <th scope="col">Categoría / Alcance</th>
+                <th scope="col">Área de atención</th>
                 <th scope="col">Horas</th>
                 <th scope="col">Responsable</th>
                 <th scope="col">Estado</th>
-                <th scope="col">Imputación / Saldo</th>
+                <th scope="col">Aplicación / Saldo</th>
               </tr>
             </thead>
             <tbody id="reportTableBody"></tbody>
@@ -560,7 +494,7 @@
   </footer>
 
   <!-- ====================================================================== -->
-  <!-- NATIVE <DIALOG>: DRAWER DE GESTIÓN DE TICKET                           -->
+  <!-- NATIVE <DIALOG>: DETALLE Y GESTIÓN DE TICKET                           -->
   <!-- ====================================================================== -->
   <dialog id="detailDialog" class="drawer-dialog" closedby="any" aria-labelledby="drawerTicketTitle">
     <div class="drawer-header">
@@ -577,19 +511,64 @@
     </div>
 
     <div class="drawer-body">
-      <!-- Datos reportados por El Derecho -->
+      <!-- Datos completos del pedido (modo consulta para todos los roles autorizados) -->
       <div class="drawer-section">
         <div class="drawer-section-title">
           <span>Información de la Solicitud</span>
-          <span id="drawerSlaBadge" class="prio-badge"></span>
+          <span id="drawerSlaBadge" class="drawer-priority-label"></span>
         </div>
         <div class="detail-grid" id="drawerClientDetails"></div>
       </div>
 
-      <!-- Evaluador de Alcance -->
-      <div class="drawer-section">
+      <!-- Capturas de pantalla o imágenes adjuntas -->
+      <div class="drawer-section" id="drawerAttachmentsSection" hidden>
         <div class="drawer-section-title">
-          <span>Validación de Alcance</span>
+          <span>Capturas de pantalla e imágenes adjuntas</span>
+        </div>
+        <div class="drawer-attachments-grid" id="drawerAttachmentsGrid"></div>
+      </div>
+
+      <!-- Registro cronológico de intervenciones -->
+      <div class="drawer-section worklog-area">
+        <div class="drawer-section-title">
+          <span>Intervenciones registradas</span>
+        </div>
+        <ul id="workHistory"></ul>
+        <fieldset id="workEntry" class="admin-only-control">
+          <legend>Registrar nueva intervención</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="workDate">Fecha de trabajo</label>
+              <input type="date" id="workDate">
+            </div>
+            <div class="form-group">
+              <label for="workHours">Horas utilizadas en esta intervención</label>
+              <input type="number" min="0.01" max="500" step="0.01" id="workHours">
+            </div>
+            <div class="form-group">
+              <label for="workAssignee">Responsable de la intervención</label>
+              <input type="text" id="workAssignee" maxlength="120" list="assigneePresetList">
+            </div>
+            <div class="form-group">
+              <label for="workMode">Aplicación de horas</label>
+              <select id="workMode">
+                <option value="bolsa">Descontar de la bolsa mensual</option>
+                <option value="presupuesto_aparte">Presupuesto aparte (no descuenta de la bolsa)</option>
+                <option value="sin_cargo_uca">Intervención de Sistemas UCA (sin cargo a la bolsa)</option>
+              </select>
+            </div>
+            <div class="form-group col-full">
+              <label for="workDescription">Tarea realizada</label>
+              <input type="text" id="workDescription" maxlength="500">
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <!-- Evaluador de Alcance (solo gestión interna Karín) -->
+      <div class="drawer-section admin-only-section">
+        <div class="drawer-section-title">
+          <span>Validación de Alcance (Gestión Karín)</span>
         </div>
         <div class="form-grid" style="margin-bottom: 0.85rem;">
           <div class="form-group">
@@ -609,10 +588,10 @@
         <div id="scopeVerdictBanner" class="scope-verdict-banner"></div>
       </div>
 
-      <!-- Gestión interna Karín e imputación de horas -->
-      <div class="drawer-section karin-zone">
+      <!-- Gestión interna Karín e imputación de horas (solo admin) -->
+      <div class="drawer-section karin-zone admin-only-section">
         <div class="drawer-section-title">
-          <span>Gestión Interna e Imputación de Horas</span>
+          <span>Gestión Interna e Imputación de Horas (Karín)</span>
         </div>
 
         <div class="form-grid">
@@ -622,8 +601,33 @@
           </div>
 
           <div class="form-group">
+            <label for="editPriority">Prioridad (solo referencia SLA; no descuenta horas)</label>
+            <select id="editPriority"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="editCategory">Área de atención</label>
+            <select id="editCategory"></select>
+          </div>
+
+          <div class="form-group">
             <label for="editAssignee">Responsable asignado</label>
-            <input type="text" id="editAssignee" maxlength="120">
+            <input type="text" id="editAssignee" maxlength="120" list="assigneePresetList">
+            <datalist id="assigneePresetList"></datalist>
+          </div>
+
+          <div class="form-group">
+            <label for="editBillingMode">Aplicación contractual</label>
+            <select id="editBillingMode">
+              <option value="bolsa">Bolsa mensual incluida (30 h / trasladadas)</option>
+              <option value="presupuesto_aparte">Presupuesto aparte (no descuenta de la bolsa)</option>
+              <option value="sin_cargo_uca">Intervención de Sistemas UCA (sin cargo a la bolsa)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="editFirstResponseAt">Primera respuesta efectiva</label>
+            <input type="datetime-local" id="editFirstResponseAt">
           </div>
 
           <div class="form-group">
@@ -637,56 +641,44 @@
           </div>
 
           <div class="form-group">
-            <label for="editBillingMode">Imputación contractual</label>
-            <select id="editBillingMode">
-              <option value="bolsa">Bolsa mensual incluida (30 h / trasladadas)</option>
-              <option value="presupuesto_aparte">Presupuesto aparte (Ajuste mayor)</option>
-              <option value="sin_cargo_uca">Intervención de Sistemas UCA sin cargo a la bolsa</option>
-            </select>
+            <label for="editLinkedGroup">Iniciativa o mejora vinculada</label>
+            <input type="text" id="editLinkedGroup" maxlength="160">
           </div>
 
           <div class="form-group">
-            <label for="editFirstResponseAt">Primera respuesta efectiva</label>
-            <input type="datetime-local" id="editFirstResponseAt">
-          </div>
-
-          <div class="form-group col-full">
-            <label for="editSeparateQuoteRef">Referencia a la conformidad de la UCA (para iniciar un trabajo aparte)</label>
+            <label for="editSeparateQuoteRef">Referencia a conformidad UCA (presupuesto aparte)</label>
             <input type="text" id="editSeparateQuoteRef" maxlength="160">
           </div>
 
           <div class="form-group col-full">
-            <label for="editTechnicalNotes">Diagnóstico, acciones realizadas y notas de seguimiento</label>
+            <label class="inline-check-card">
+              <input type="checkbox" id="editInvolvesAws">
+              <span>
+                <strong>Involucra infraestructura AWS / Sistemas UCA:</strong>
+                Marcá esta opción si el ticket requiere intervención o coordinación con Sistemas UCA.
+              </span>
+            </label>
+          </div>
+
+          <div class="form-group col-full">
+            <label for="editTechnicalNotes">Diagnóstico, acciones realizadas y notas internas</label>
             <textarea id="editTechnicalNotes" maxlength="8000"></textarea>
           </div>
         </div>
       </div>
+    </div>
 
-    <div class="worklog-area">
-      <h3>Intervenciones registradas</h3>
-      <ul id="workHistory"></ul>
-      <fieldset id="workEntry"><legend>Registrar una intervención</legend>
-        <div class="form-grid">
-          <div class="form-group"><label for="workDate">Fecha de trabajo</label><input type="date" id="workDate"></div>
-          <div class="form-group"><label for="workHours">Horas de esta intervención</label><input type="number" min="0.01" max="500" step="0.01" id="workHours"></div>
-          <div class="form-group"><label for="workAssignee">Responsable de la intervención</label><input id="workAssignee" maxlength="120" placeholder="Responsable asignado"></div>
-          <div class="form-group"><label for="workMode">Imputación de la intervención</label><select id="workMode"><option value="bolsa">Bolsa mensual</option><option value="presupuesto_aparte">Presupuesto aparte</option><option value="sin_cargo_uca">Sin cargo UCA</option></select></div>
-          <div class="form-group col-full"><label for="workDescription">Tarea realizada</label><input id="workDescription" maxlength="500"></div>
-        </div>
-      </fieldset>
-    </div>
-    </div>
     <div class="drawer-footer">
-      <button type="button" class="btn btn-danger-square" id="btnDeleteFromDrawer">Eliminar</button>
+      <button type="button" class="btn btn-danger-square admin-only-control" id="btnDeleteFromDrawer">Eliminar</button>
       <div class="drawer-footer-actions">
         <button type="button" class="btn btn-secondary" id="btnCopyTicketSummary">Copiar Resumen</button>
-        <button type="button" class="btn btn-primary" id="btnSaveTicketChanges">Guardar Cambios</button>
+        <button type="button" class="btn btn-primary admin-only-control" id="btnSaveTicketChanges">Guardar Cambios</button>
       </div>
     </div>
   </dialog>
 
   <!-- ====================================================================== -->
-  <!-- NATIVE <DIALOG>: CONFIRMACIÓN DE ELIMINACIÓN                           -->
+  <!-- NATIVE <DIALOG>: CONFIRMACIÓN DE ELIMINACIÓN (SOLO ADMIN)              -->
   <!-- ====================================================================== -->
   <dialog id="confirmDeleteDialog" class="confirm-dialog" closedby="any" aria-labelledby="confirmDeleteTitle">
     <h2 id="confirmDeleteTitle">ELIMINAR TICKET</h2>
@@ -694,6 +686,70 @@
     <form method="dialog" class="confirm-dialog-actions">
       <button type="submit" value="cancel" class="btn btn-secondary" autofocus>Cancelar</button>
       <button type="submit" value="confirm" class="btn btn-danger-square">Eliminar Ticket</button>
+    </form>
+  </dialog>
+
+  <!-- ====================================================================== -->
+  <!-- NATIVE <DIALOG>: VISOR DE IMAGEN ADJUNTA                               -->
+  <!-- ====================================================================== -->
+  <dialog id="imageLightboxDialog" class="lightbox-dialog" closedby="any" aria-labelledby="lightboxCaption">
+    <div class="lightbox-header">
+      <span id="lightboxCaption">Imagen adjunta</span>
+      <button type="button" class="btn-close-dialog" id="btnCloseLightbox" aria-label="Cerrar imagen">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="lightbox-body">
+      <img id="lightboxImg" src="" alt="Captura adjunta al ticket">
+    </div>
+  </dialog>
+
+  <!-- ====================================================================== -->
+  <!-- NATIVE <DIALOG>: AJUSTE DE SALDO INICIAL / CORRECCIÓN (SOLO KARÍN)     -->
+  <!-- ====================================================================== -->
+  <dialog id="balanceAdjustDialog" class="balance-dialog" closedby="any" aria-labelledby="balanceAdjustTitle">
+    <div class="drawer-header">
+      <div>
+        <h2 id="balanceAdjustTitle">AJUSTE DE SALDO DE HORAS (KARÍN)</h2>
+        <p class="balance-dialog-sub">Exclusivo para administración. Cada ajuste registra quién lo realizó y el motivo para reconstruir el saldo.</p>
+      </div>
+      <button type="button" class="btn-close-dialog" id="btnCloseBalanceAdjust" aria-label="Cerrar ajuste de saldo">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.2" fill="none">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="balanceAdjustForm" class="balance-dialog-body" novalidate>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="adjustPeriod">Período a ajustar <span class="req">*</span></label>
+          <input type="month" id="adjustPeriod" required>
+        </div>
+        <div class="form-group">
+          <label for="adjustHours">Horas trasladadas al inicio del mes (0 a 30 h) <span class="req">*</span></label>
+          <input type="number" id="adjustHours" min="0" max="30" step="0.01" required>
+        </div>
+        <div class="form-group col-full">
+          <label for="adjustReason">Motivo del ajuste <span class="req">*</span></label>
+          <span id="adjustReasonHint" class="field-hint">Indicá si corresponde a carga de saldo inicial o corrección de un cierre anterior.</span>
+          <textarea id="adjustReason" maxlength="255" required aria-describedby="adjustReasonHint"></textarea>
+        </div>
+      </div>
+
+      <div class="balance-adjust-actions">
+        <button type="button" class="btn btn-secondary" id="btnCancelBalanceAdjust">Cancelar</button>
+        <button type="submit" class="btn btn-primary" id="btnSaveBalanceAdjust">Guardar Ajuste</button>
+      </div>
+
+      <div class="balance-history-wrap">
+        <h3>Historial de ajustes registrados</h3>
+        <ul id="balanceAdjustHistoryList" class="balance-history-list"></ul>
+      </div>
     </form>
   </dialog>
 
